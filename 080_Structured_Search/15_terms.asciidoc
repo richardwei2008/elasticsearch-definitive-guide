@@ -1,15 +1,15 @@
-=== Finding Multiple Exact Values
+=== 查找多个精确值
 
-The `term` filter is useful for finding a single value, but often you'll  want
-to search for multiple values.((("exact values", "finding multiple")))((("structured search", "finding multiple exact values")))  What if you want to find documents that have a
-price of $20 or $30?
+一个 `term` 过滤器对于查找单个值非常有用，但是我们可能会想
+要搜索多个值。((("exact values", "finding multiple")))((("structured search", "finding multiple exact values")))  如果我们想要找
+价格为 $20 或 $30 （美元）的产品文档该如何处理呢？
 
-Rather than using multiple `term` filters, you can instead use a single `terms`
-filter (note the _s_ at the end).  The `terms` filter((("terms filter"))) is simply the plural
-version of the singular `term` filter.
+不需要使用多个 `term` 过滤器，我们只要用单个 `terms`
+过滤器（注意末尾的 _s_ ）， `terms` 过滤器只是 `term` 过滤器的复数
+形式（以英语单词做比）。
 
-It looks nearly identical to a vanilla `term` too.  Instead of
-specifying a single price, we are now specifying an array of values:
+它几乎与 `term` 的使用方式一模一样，与指定
+单个价格不同，我们只要将 `term` 字段的值改为数组即可：
 
 [source,js]
 --------------------------------------------------
@@ -20,8 +20,8 @@ specifying a single price, we are now specifying an array of values:
 }
 --------------------------------------------------
 
-And like the `term` filter, we will place it inside a `filtered` query to
-((("filtered query", "terms filter in"))) use it:
+与 `term` 过滤器一样，也需要将其置入 `filtered` 查询
+((("filtered query", "terms filter in"))) 中使用：
 
 [source,js]
 --------------------------------------------------
@@ -40,9 +40,9 @@ GET /my_store/products/_search
 --------------------------------------------------
 // SENSE: 080_Structured_Search/15_Terms_filter.json
 
-<1> The `terms` filter as seen previously, but placed inside the `filtered` query
+<1> 这个 `terms` 过滤器被置于 `filtered` 查询中
 
-The query will return the second, third, and fourth documents:
+运行结果返回第二、第三和第四个文档：
 
 [source,json]
 --------------------------------------------------
@@ -73,7 +73,3 @@ The query will return the second, third, and fourth documents:
      }
 ]
 --------------------------------------------------
-
-
-
-
