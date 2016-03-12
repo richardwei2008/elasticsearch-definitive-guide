@@ -1,15 +1,10 @@
 === 查找多个精确值
 
-一个 `term` 过滤器对于查找单个值非常有用，但是我们可能会想
-要搜索多个值。((("exact values", "finding multiple")))((("structured search", "finding multiple exact values")))  如果我们想要找
-价格为 $20 或 $30 （美元）的产品文档该如何处理呢？
+一个 `term` 过滤器对于查找单个值非常有用，但是我们可能会想要搜索多个值。((("exact values", "finding multiple")))((("structured search", "finding multiple exact values")))  如果我们想要找价格为 $20 或 $30 美元的产品文档该如何处理呢？
 
-不需要使用多个 `term` 过滤器，我们只要用单个 `terms`
-过滤器（注意末尾的 _s_ ）， `terms` 过滤器只是 `term` 过滤器的复数
-形式（以英语单词做比）。
+不需要使用多个 `term` 过滤器，我们只要用单个 `terms` 过滤器（注意末尾的 _s_ ）， `terms` 过滤器只是 `term` 过滤器的复数形式（以英语单词做比）。
 
-它几乎与 `term` 的使用方式一模一样，与指定
-单个价格不同，我们只要将 `term` 字段的值改为数组即可：
+它几乎与 `term` 的使用方式一模一样，与指定单个价格不同，我们只要将 `term` 字段的值改为数组即可：
 
 [source,js]
 --------------------------------------------------
@@ -20,8 +15,7 @@
 }
 --------------------------------------------------
 
-与 `term` 过滤器一样，也需要将其置入 `filtered` 查询
-((("filtered query", "terms filter in"))) 中使用：
+与 `term` 过滤器一样，也需要将其置入 `filtered` 查询((("filtered query", "terms filter in"))) 中使用：
 
 [source,js]
 --------------------------------------------------
