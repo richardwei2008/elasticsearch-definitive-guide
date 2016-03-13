@@ -1,15 +1,10 @@
-=== Filter Order
+=== 过滤器顺序
 
-The order of filters in a `bool` clause is important for performance.((("structured search", "filter order")))((("filters", "order of"))) More-specific filters should be placed before less-specific filters in order to
-exclude as many documents as possible, as early as possible.
+在 `bool` 过滤器中，过滤器的顺序对性能是非常重要的。((("structured search", "filter order")))((("filters", "order of")))更具体的过滤器应该放在次具体的过滤器之前，这样可以尽早排除更可能多的文档。
 
-If Clause A could match 10 million documents, and Clause B could match
-only 100 documents, then Clause B should be placed before Clause A.
+如果语句 A 可以匹配 1000 万个文档，语句 B 只能匹配 100 个文档，那么语句 B 须要放在语句 A 之前。
 
-Cached filters are very fast, so they should be placed before filters that
-are not cacheable.((("caching", "cached filters, order of")))  Imagine that we have an index that contains one month's
-worth of log events. However, we're mostly interested only in log events from
-the previous hour:
+缓存的过滤器非常快，它们应该被置于不能缓存的过滤器之前，((("caching", "cached filters, order of")))假设有一个索引包括一个月的日志事件，但是，最让我们感兴趣的只是过去 1 小时内的日志事件：
 
 [source,js]
 --------------------------------------------------
@@ -29,13 +24,9 @@ GET /logs/2014-01/_search
 }
 --------------------------------------------------
 
-This filter is not cached because it uses the `now` function,((("now function", "filters using, caching and"))) the value of
-which changes every millisecond. That means that we have to examine one
-month's worth of log events every time we run this query!
+这个过滤器不会被缓存，因为使用了 `now` 函数，它的值每毫秒都在发生改变。((("now function", "filters using, caching and")))这意味着我们每次查询时都需要检查一个月的日志事件。
 
-We could make this much more efficient by combining it with a cached filter:
-we can exclude most of the month's data by adding a filter that uses a fixed
-point in time, such as midnight last night:
+我们可以将这个查询与一个缓存过滤器结合，使查询变得更高效：增加固定时间点先排除绝大多数的日志，比如昨日深夜这个时间点：
 
 [source,js]
 --------------------------------------------------
@@ -54,20 +45,10 @@ point in time, such as midnight last night:
     ]
 }
 --------------------------------------------------
-<1> This filter is cached because it uses `now` rounded to midnight.
+<1> 这个过滤器会被缓存，因为它将 `now` 取整至昨日深夜。
 
-<2> This filter is not cached because it uses `now` _without_ rounding.
+<2> 这个过滤器不被缓存，因为它使用的 `now` _没有_ 取整。
 
-The `now-1h/d` clause rounds to the previous midnight and so excludes all documents
-created before today.  The resulting bitset is cached because `now` is used
-with rounding, which means that it is executed only once a day, when the value
-for _midnight-last-night_ changes.  The `now-1h` clause isn't cached because
-`now` produces a time accurate to the nearest millisecond. However, thanks to
-the first filter, this second filter need only check documents that have been
-created since midnight.
+语句 `now-1h/d` 将时间截取至昨日深夜，这能将今日之前的所有文档都排除。结果位集之所以会被缓存是因为 `now` 与取整结合使用，这意味着它每天只会被计算一次，即当 _昨日深夜（midnight-last-night）_ 这个值发生变化的时候。语句  `now-1h` 之所以没被缓存是因为 `now` 函数生成的精确时间每毫秒都在变化。由于第一个过滤器可以先帮我们过滤掉今日之前的所有文档，所以第二个过滤器只会检查剩下的文档。
 
-The order of these clauses is important. This approach works only because the
-_since-midnight_ clause comes before the _last-hour_ clause. If they were the
-other  way around, then the _last-hour_ clause would need to examine all
-documents in the index, instead of just documents created since midnight.
-
+语句的顺序非常重要，这个方法只在 _深夜之前（since-midnight）_ 语句置于 _过去一小时（last-hour）_ 语句之前时才有效。如果顺序相反，那么 _过去一小时（last-hour）_ 语句就要检查索引中的所有文档，而非当天创建的文档。
