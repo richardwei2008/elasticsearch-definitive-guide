@@ -1,106 +1,84 @@
 [[filter-caching]]
-=== All About Caching
+=== 关于缓存
+:ref:  http://www.elastic.co/guide/cn/elasticsearch/reference/current
 
-Earlier in this chapter (<<_internal_filter_operation>>), we briefly discussed
-how non-scoring queries are calculated.((("structured search", "caching of query results")))
-((("caching", "bitsets representing documents matching queries")))((("bitsets, caching of")))
-((("queries", "bitsets representing documents matching, caching of")))  At their
-heart is a bitset representing which documents match the filter.  When Elasticsearch
-determines a bitset is likely to be reused in the future, it will be cached directly
-in memory for later use.  Once cached, these bitsets can be reused _wherever_
-the same query is used, without having to reevaluate the entire query again.
+在本章前面（<<_internal_filter_operation, 过滤器的内部操作>>）中，我们已经简单介绍滤器是如何计算的。((("structured search", "caching of filter results")))((("caching", "bitsets representing documents matching filters")))((("bitsets, caching of")))((("filters", "bitsets representing documents matching, caching of")))其核心实际是采用一个位集（bitset）记录与过滤器匹配的文档。Elasticsearch 积极地把这些位集缓存起来以备随后使用。一旦缓存成功，位集可以复用 _任何_ 已使用过的相同过滤器，而无需再次计算整个过滤器。
 
-These cached bitsets are ``smart'': they are updated incrementally. As you
-index new documents, only those new documents need to be added to the existing
-bitsets, rather than having to recompute the entire cached filter over and
-over. Filters are real-time like the rest of the system; you don't need to
-worry about cache expiry.
+这些位集缓存是智能的：它们以增量方式更新。当我们索引新文档时，只需将那些新文档加入已有位集，而不是对整个缓存一遍又一遍的重复计算。和系统其他部分一样，过滤器是实时的，我们无需担心缓存过期问题。
 
-==== Independent Query Caching
+==== 独立的过滤器缓存
 
-The bitsets belonging to a query component are independent from the rest of the
-search request.  This means that, once cached, a query can be reused in multiple
-search requests.  It is not dependent on the "context" of the surrounding query.
-This allows caching to accelerate the most frequently used portions of your queries,
-without wasting overhead on the less frequent / more volatile portions.
+每个过滤器计算和缓存都是独立的，与它们具体的使用场景无关。((("filters", "independent caching of")))如果两个完全不同的查询使用了相同的过滤器，同一个缓存位集会被复用。同样，如果单个查询在多个地方使用到了相同的过滤器，只会计算并重用一个位集。
 
-Similarly, if a single search request reuses the same non-scoring query, it's
-cached bitset can be reused for all instances inside the single search request.
+让我们看看下面例子中的查询，它查找满足以下任意一个条件的电子邮件：
 
-Let's look at this example query, which looks for emails that are either of the following:
-
-* In the inbox and have not been read
-* _Not_ in the inbox but have been marked as important
+* 在收件箱中，且没有被读过的
+* _不在_ 收件箱中，但被标注重要的
 
 [source,js]
 --------------------------------------------------
-GET /inbox/emails/_search
-{
-  "query": {
-      "constant_score": {
-          "filter": {
-              "bool": {
-                 "should": [
-                    { "bool": {
-                          "must": [
-                             { "term": { "folder": "inbox" }}, <1>
-                             { "term": { "read": false }}
-                          ]
-                    }},
-                    { "bool": {
-                          "must_not": {
-                             "term": { "folder": "inbox" } <1>
-                          },
-                          "must": {
-                             "term": { "important": true }
-                          }
-                    }}
-                 ]
-              }
+"bool": {
+   "should": [
+      { "bool": {
+            "must": [
+               { "term": { "folder": "inbox" }}, <1>
+               { "term": { "read": false }}
+            ]
+      }},
+      { "bool": {
+            "must_not": {
+               "term": { "folder": "inbox" } <1>
+            },
+            "must": {
+               "term": { "important": true }
             }
-        }
+      }}
+   ]
+}
+--------------------------------------------------
+<1> 两个过滤器是相同的，所以会使用同一位集。
+
+尽管其中一个收件箱的条件是 `must` 语句，另一个是 `must_not` 语句，但他们两者是完全相同的。这意味着在第一个语句执行后，位集就会被计算然后缓存起来供另一个使用。当再次执行这个查询时，收件箱的这个过滤器已经被缓存了，所以两个语句都会使用已缓存的位集。
+
+这点与查询表达式（query DSL）的可组合性结合得很好。它易被移动到表达式的任何地方，或者在同一查询中的多个位置复用。这不仅能方便开发者，而且对提升性能有直接的益处。
+
+==== 控制缓存
+
+大多数 _叶子过滤器（leaf filters）_ （指那些直接处理字段的 `term` 过滤器）都是被缓存的，((("leaf filters, caching of")))((("caching", "of leaf filters, controlling")))((("filters", "controlling caching of")))但复合过滤器（如 `bool` 过滤器）是不会被缓存的。
+
+[NOTE]
+====
+叶子过滤器必须访问磁盘上的倒排索引，因此我们有理由将它们缓存起来。但另一方面，组合过滤器运用快速的位逻辑将内部语句的位集结果合并起来，所以即使每次都重复计算也是高效的。
+====
+
+但是某些叶子过滤器在默认情况下不会被缓存，因为这样做没有任何意义：
+
+脚本过滤器（Script filters）::
+
+{ref}/query-dsl-script-query.html 里的结果不会被缓存，((("script filters, no caching of results")))因为对 Elasticsearch 来说脚本的含义是模糊的。
+
+地理位置过滤器（Geo-filters）::
+
+地理位置过滤器((("geolocation filters, no caching of results")))（详细信息参见 <<geoloc, 地理位置>>）通常被用以过滤某个具体用户的地理位置信息（geolocation），因为每个用户都有唯一的地理位置信息，所以地理位置过滤器不大可能被复用，缓存它们的意义不大。
+
+日期过滤器（Date ranges）::
+
+使用 `now` 函数（比如 `"now-1h"` ）的时间范围可以精确到毫秒。((("date ranges", "using now function, no caching of")))((("now function", "date ranges using")))在每次过滤时 `now` 都会返回一个最新时间，所以旧的过滤器不会被复用，缓存功能默认也是被禁用的。但当将 `now` 与取整（rounding）（比如， `now/d` 表示最近的一天）结合时，缓存功能默认是开启的。
+
+有时默认的缓存策略并不正确。可能要在同一查询中反复使用一个复杂的 `bool` 布尔表达式，可能有一个 `date` 日期字段的过滤器永远不会被复用。默认的缓存策略几乎可以在任意过滤器上覆写，只要设置 `_cache` 标志位：
+
+[source,js]
+--------------------------------------------------
+{
+    "range" : {
+        "timestamp" : {
+            "gt" : "2014-01-02 16:15:14" <1>
+        },
+        "_cache": false <2>
     }
 }
 --------------------------------------------------
-<1> These two queries are identical and will use the same bitset.
+<1> 我们不太可能重用这个时间戳。
+<2> 禁用这个过滤器的缓存功能。
 
-Even though one of the inbox clauses is a `must` clause and the other is a
-`must_not` clause, the two clauses themselves are identical. If this particular
-`term` query was previously cached, both instances would benefit from the cached
-representation despite being used in different styles of boolean logic.
-
-This ties in nicely with the composability of the query DSL.  It is easy to
-move filtering queries around, or reuse the same query in multiple places within the
-search request.  This isn't just convenient to the developer--it has direct
-performance benefits.
-
-==== Autocaching Behavior
-
-In older versions of Elasticsearch, the default behavior was to cache everything
-that was cacheable.  This often meant the system cached bitsets too aggressively
-and performance suffered due to thrashing the cache.  In addition, many filters
-are very fast to evaluate, but substantially slower to cache (and reuse from cache).
-These filters don't make sense to cache, since you'd be better off just re-executing
-the filter again.
-
-Inspecting the inverted index is very fast and most query components are rare.
-Consider a `term` filter on a `"user_id"` field:  if you have millions of users,
-any particular user ID will only occur rarely.  It isn't profitable to cache
-the bitsets for this filter, as the cached result will likely be evicted
-from the cache before it is used again.
-
-This type of cache churn can have serious effects on performance.  What's worse,
-it is difficult for developers to identify which components exhibit good cache
-behavior and which are useless.
-
-To address this, Elasticsearch caches queries automatically based on usage frequency.
-If a non-scoring query has been used a few times (dependent on the query type) in the last 256 queries,
-the query is a candidate for caching.  However, not all segments are guaranteed
-to cache the bitset.  Only segments that hold more than 10,000 documents (or 3%
-of the total documents, whichever is larger) will cache the bitset.  Because
-small segments are fast to search and merged out quickly, it doesn't make sense
-to cache bitsets here.
-
-Once cached, a non-scoring bitset will remain in the cache until it is evicted.
-Eviction is done on an LRU basis: the least-recently used filter will be evicted
-once the cache is full.
+后面章节会提供覆写默认缓存策略的有效示例。
