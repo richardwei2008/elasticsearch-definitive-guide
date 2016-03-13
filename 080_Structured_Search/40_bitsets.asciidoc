@@ -1,29 +1,19 @@
 [[filter-caching]]
-=== All About Caching
+=== 关于缓存
+:ref:  http://www.elastic.co/guide/cn/elasticsearch/reference/current
 
-Earlier in this chapter (<<_internal_filter_operation>>), we briefly discussed
-how filters are calculated.((("structured search", "caching of filter results")))((("caching", "bitsets representing documents matching filters")))((("bitsets, caching of")))((("filters", "bitsets representing documents matching, caching of")))  At their heart is a bitset representing which
-documents match the filter. Elasticsearch aggressively caches these bitsets for later use.  Once cached,
-these bitsets can be reused _wherever_ the same filter is used, without having
-to reevaluate the entire filter again.
+在本章前面（<<_internal_filter_operation, 过滤器的内部操作>>）中，我们已经简单介绍滤器是如何计算的。((("structured search", "caching of filter results")))((("caching", "bitsets representing documents matching filters")))((("bitsets, caching of")))((("filters", "bitsets representing documents matching, caching of")))其核心实际是采用一个位集（bitset）记录与过滤器匹配的文档。Elasticsearch 积极地把这些位集缓存起来以备随后使用。一旦缓存成功，位集可以复用 _任何_ 已使用过的相同过滤器，而无需再次计算整个过滤器。
 
-These cached bitsets are ``smart'': they are updated incrementally. As you
-index new documents, only those new documents need to be added to the existing
-bitsets, rather than having to recompute the entire cached filter over and
-over. Filters are real-time like the rest of the system; you don't need to
-worry about cache expiry.
+这些位集缓存是智能的：它们以增量方式更新。当我们索引新文档时，只需将那些新文档加入已有位集，而不是对整个缓存一遍又一遍的重复计算。和系统其他部分一样，过滤器是实时的，我们无需担心缓存过期问题。
 
-==== Independent Filter Caching
+==== 独立的过滤器缓存
 
-Each filter is calculated and cached independently, regardless of where it is
-used.((("filters", "independent caching of"))) If two different queries use the same filter, the same filter bitset
-will be reused.  Likewise, if a single query uses the same filter in multiple
-places, only one bitset is calculated and then reused.
+每个过滤器计算和缓存都是独立的，与它们具体的使用场景无关。((("filters", "independent caching of")))如果两个完全不同的查询使用了相同的过滤器，同一个缓存位集会被复用。同样，如果单个查询在多个地方使用到了相同的过滤器，只会计算并重用一个位集。
 
-Let's look at this example query, which looks for emails that are either of the following:
+让我们看看下面例子中的查询，它查找满足以下任意一个条件的电子邮件：
 
-* In the inbox and have not been read
-* _Not_ in the inbox but have been marked as important
+* 在收件箱中，且没有被读过的
+* _不在_ 收件箱中，但被标注重要的
 
 [source,js]
 --------------------------------------------------
@@ -46,60 +36,36 @@ Let's look at this example query, which looks for emails that are either of the 
    ]
 }
 --------------------------------------------------
-<1> These two filters are identical and will use the same bitset.
+<1> 两个过滤器是相同的，所以会使用同一位集。
 
-Even though one of the inbox clauses is a `must` clause and the other is a
-`must_not` clause, the two clauses themselves are identical. This means that
-the bitset is calculated once for the first clause that is executed, and then
-the cached bitset is used for the other clause.  By the time this query is run
-a second time, the inbox filter is already cached and so both clauses will use
-the cached bitset.
+尽管其中一个收件箱的条件是 `must` 语句，另一个是 `must_not` 语句，但他们两者是完全相同的。这意味着在第一个语句执行后，位集就会被计算然后缓存起来供另一个使用。当再次执行这个查询时，收件箱的这个过滤器已经被缓存了，所以两个语句都会使用已缓存的位集。
 
-This ties in nicely with the composability of the query DSL.  It is easy to
-move filters around, or reuse the same filter in multiple places within the
-same query.  This isn't just convenient to the developer--it has direct
-performance benefits.
+这点与查询表达式（query DSL）的可组合性结合得很好。它易被移动到表达式的任何地方，或者在同一查询中的多个位置复用。这不仅能方便开发者，而且对提升性能有直接的益处。
 
-==== Controlling Caching
+==== 控制缓存
 
-Most _leaf filters_&#x2014;those dealing directly with fields like the `term`
-filter--are cached, while((("leaf filters, caching of")))((("caching", "of leaf filters, controlling")))((("filters", "controlling caching of"))) compound filters, like the `bool` filter, are not.
+大多数 _叶子过滤器（leaf filters）_ （指那些直接处理字段的 `term` 过滤器）都是被缓存的，((("leaf filters, caching of")))((("caching", "of leaf filters, controlling")))((("filters", "controlling caching of")))但复合过滤器（如 `bool` 过滤器）是不会被缓存的。
 
 [NOTE]
 ====
-Leaf filters have to consult the inverted index on disk, so it makes sense to
-cache them. Compound filters, on the other hand, use fast bit logic to combine
-the bitsets resulting from their inner clauses, so it is efficient to
-recalculate them every time.
+叶子过滤器必须访问磁盘上的倒排索引，因此我们有理由将它们缓存起来。但另一方面，组合过滤器运用快速的位逻辑将内部语句的位集结果合并起来，所以即使每次都重复计算也是高效的。
 ====
 
-Certain leaf filters, however, are not cached by default, because it
-doesn't make sense to do so:
+但是某些叶子过滤器在默认情况下不会被缓存，因为这样做没有任何意义：
 
-Script filters::
+脚本过滤器（Script filters）::
 
-The results((("script filters, no caching of results"))) from {ref}/query-dsl-script-query.html cannot
-be cached because the meaning of the script is opaque to Elasticsearch.
+{ref}/query-dsl-script-query.html 里的结果不会被缓存，((("script filters, no caching of results")))因为对 Elasticsearch 来说脚本的含义是模糊的。
 
-Geo-filters::
+地理位置过滤器（Geo-filters）::
 
-The geolocation filters, which((("geolocation filters, no caching of results"))) we cover in more detail in <<geoloc>>, are
-usually used to filter results based on the geolocation of a specific user.
-Since each user has a unique geolocation, it is unlikely that geo-filters will be reused, so it makes no sense to cache them.
+地理位置过滤器((("geolocation filters, no caching of results")))（详细信息参见 <<geoloc, 地理位置>>）通常被用以过滤某个具体用户的地理位置信息（geolocation），因为每个用户都有唯一的地理位置信息，所以地理位置过滤器不大可能被复用，缓存它们的意义不大。
 
-Date ranges::
+日期过滤器（Date ranges）::
 
-Date ranges that ((("date ranges", "using now function, no caching of")))((("now function", "date ranges using")))use the `now` function (for example `"now-1h"`), result in values
-accurate to the millisecond. Every time the filter is run, `now` returns a new
-time. Older filters will never be reused, so caching is disabled by default.
-However, when using `now` with rounding (for example, `now/d` rounds to the nearest day),
-caching is enabled by default.
+使用 `now` 函数（比如 `"now-1h"` ）的时间范围可以精确到毫秒。((("date ranges", "using now function, no caching of")))((("now function", "date ranges using")))在每次过滤时 `now` 都会返回一个最新时间，所以旧的过滤器不会被复用，缓存功能默认也是被禁用的。但当将 `now` 与取整（rounding）（比如， `now/d` 表示最近的一天）结合时，缓存功能默认是开启的。
 
-Sometimes the default caching strategy is not correct. Perhaps you have a
-complicated `bool` expression that is reused several times in the same query.
-Or you have a filter on a `date` field that will never be reused.  The default
-caching strategy ((("_cache flag", sortas="cache flag")))((("filters", "overriding default caching strategy on")))can be overridden on almost any filter by setting the
-`_cache` flag:
+有时默认的缓存策略并不正确。可能要在同一查询中反复使用一个复杂的 `bool` 布尔表达式，可能有一个 `date` 日期字段的过滤器永远不会被复用。默认的缓存策略几乎可以在任意过滤器上覆写，只要设置 `_cache` 标志位：
 
 [source,js]
 --------------------------------------------------
@@ -112,8 +78,7 @@ caching strategy ((("_cache flag", sortas="cache flag")))((("filters", "overridi
     }
 }
 --------------------------------------------------
-<1> It is unlikely that we will reuse this exact timestamp.
-<2> Disable caching of this filter.
+<1> 我们不太可能重用这个时间戳。
+<2> 禁用这个过滤器的缓存功能。
 
-Later chapters provide examples of when it can make sense to
-override the default caching strategy.
+后面章节会提供覆写默认缓存策略的有效示例。
