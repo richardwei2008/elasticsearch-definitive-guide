@@ -1,6 +1,5 @@
 [[filter-caching]]
 === 关于缓存
-:ref:  http://www.elastic.co/guide/cn/elasticsearch/reference/current
 
 在本章前面（<<_internal_filter_operation, 过滤器的内部操作>>）中，我们已经简单介绍滤器是如何计算的。((("structured search", "caching of filter results")))((("caching", "bitsets representing documents matching filters")))((("bitsets, caching of")))((("filters", "bitsets representing documents matching, caching of")))其核心实际是采用一个位集（bitset）记录与过滤器匹配的文档。Elasticsearch 积极地把这些位集缓存起来以备随后使用。一旦缓存成功，位集可以复用 _任何_ 已使用过的相同过滤器，而无需再次计算整个过滤器。
 
@@ -55,7 +54,8 @@
 
 脚本过滤器（Script filters）::
 
-{ref}/query-dsl-script-query.html 里的结果不会被缓存，((("script filters, no caching of results")))因为对 Elasticsearch 来说脚本的含义是模糊的。
+{ref}/query-dsl-script-query.html
+里的结果不会被缓存，((("script filters, no caching of results")))因为对 Elasticsearch 来说脚本的含义是模糊的。
 
 地理位置过滤器（Geo-filters）::
 
