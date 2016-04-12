@@ -65,7 +65,7 @@
 
 使用 `now` 函数（比如 `"now-1h"` ）的时间范围可以精确到毫秒。((("date ranges", "using now function, no caching of")))((("now function", "date ranges using")))在每次过滤时 `now` 都会返回一个最新时间，所以旧的过滤器不会被复用，缓存功能默认也是被禁用的。但当将 `now` 与取整（rounding）（比如， `now/d` 表示最近的一天）结合时，缓存功能默认是开启的。
 
-有时默认的缓存策略并不正确。可能要在同一查询中反复使用一个复杂的 `bool` 布尔表达式，可能有一个 `date` 日期字段的过滤器永远不会被复用。默认的缓存策略几乎可以在任意过滤器上覆写，只要设置 `_cache` 标志位：
+有时默认的缓存策略((("_cache flag", sortas="cache flag")))((("filters", "overriding default caching strategy on")))并不正确。可能要在同一查询中反复使用一个复杂的 `bool` 布尔表达式，可能有一个 `date` 日期字段的过滤器永远不会被复用。默认的缓存策略几乎可以在任意过滤器上覆写，只要设置 `_cache` 标志位：
 
 [source,js]
 --------------------------------------------------
