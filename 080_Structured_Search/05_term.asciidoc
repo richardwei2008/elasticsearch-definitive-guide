@@ -4,7 +4,7 @@
 
 ==== 过滤数字
 
-我们首先来看最为常用的 `term` （词项）过滤器，可以用它处理数字（numbers）、布尔值（Booleans）、日期（dates）以及文本（text）。
+我们首先来看最为常用的 `term` 过滤器，可以用它处理数字（numbers）、布尔值（Booleans）、日期（dates）以及文本（text）。
 
 让我们通过下面一个例子，先对数字（过滤）进行说明。创建并索引一些产品，文档里有字段 `price` 和 `productID` （ `价格` 和 `产品ID` ）：
 
@@ -42,7 +42,7 @@ WHERE  price = 20
 }
 --------------------------------------------------
 
-不过 `term` 过滤器无法单独使用，如<<query-dsl-intro, 介绍查询表达式>> 中讨论的那样，`search` （搜索）API 期望一个 `query` （查询）而不是一个 `filter` （过滤器）。所以((("filtered query")))我们需要将  `term` 过滤器放在一个<<filtered-query, `filtered` （已过滤）查询>>中：
+不过 `term` 过滤器无法单独使用，如<<query-dsl-intro, 介绍查询表达式>> 中讨论的那样，`search` （搜索）API 期望一个 `query` （查询）而不是一个 `filter` （过滤器）。所以((("filtered query")))我们需要将  `term` 过滤器放在一个<<filtered-query, `filtered` 查询>>中：
 
 [source,js]
 --------------------------------------------------
@@ -117,7 +117,7 @@ GET /my_store/products/_search
 --------------------------------------------------
 // SENSE: 080_Structured_Search/05_Term_text.json
 
-但这里有个小问题：我们无法获得期望的结果。为什么呢？问题不在 `term` 查询，而在于索引数据的方式。 ((("analyze API, using to understand tokenization"))) 如果我们使用 `analyze` （分析）API (<<analyze-api, 分析 API>>)，我们可以看到这里的 UPC 码被拆分成多个小标记（token）：
+但这里有个小问题：我们无法获得期望的结果。为什么呢？问题不在 `term` 查询，而在于索引数据的方式。 ((("analyze API, using to understand tokenization"))) 如果我们使用 `analyze` （分析）API (<<analyze-api, 分析 API>>)，我们可以看到这里的 UPC 码被拆分成多个更小的 token ：
 
 [source,js]
 --------------------------------------------------
@@ -158,15 +158,15 @@ XHDK-A-1293-#fJ3
 
 这里有几点需要注意：
 
-* Elasticsearch 用4个不同的标记（token）而不是单个标记（token）来表示这个UPC。
+* Elasticsearch 用4个不同的 token 而不是单个 token 来表示这个UPC。
 * 所有字母都是小写的。
 * 丢失了连字符和哈希符（ `#` ）。
 
-所以当我们用 `term` 过滤器去查找精确值 `XHDK-A-1293-#fJ3` 的时候，找不到任何文档，因为它并不在我们的倒排索引（inverted index）中，正如前面呈现出的分析结果，索引里有四个标记（tokens）。
+所以当我们用 `term` 过滤器去查找精确值 `XHDK-A-1293-#fJ3` 的时候，找不到任何文档，因为它并不在我们的倒排索引（inverted index）中，正如前面呈现出的分析结果，索引里有四个 token 。
 
 显然这种对 ID 码或其他任何精确值的处理方式并不是我们想要的。
 
-为了避免这种问题，我们需要告诉 Elasticsearch 该字段具有精确值，要将其设置成 `not_analyzed` （未分析的）。((("not_analyzed string fields"))) 我们可以在 <<custom-field-mappings, 自定义字段映射>> 中查看它的用法。为了修正搜索结果，我们需要首先删除旧索引（因为它的映射不再正确）然后创建一个能正确映射的新索引：
+为了避免这种问题，我们需要告诉 Elasticsearch 该字段具有精确值，要将其设置成 `not_analyzed` 无需分析的。((("not_analyzed string fields"))) 我们可以在 <<custom-field-mappings, 自定义字段映射>> 中查看它的用法。为了修正搜索结果，我们需要首先删除旧索引（因为它的映射不再正确）然后创建一个能正确映射的新索引：
 
 [source,js]
 --------------------------------------------------
@@ -236,14 +236,14 @@ GET /my_store/products/_search
 
 1. _查找匹配文档_ 。
 +
-`term` 过滤器在倒排索引中查找 `XHDK-A-1293-#fJ3` 然后获取包含该词项（term）的所有文档。本例中，只有文档 1 满足我们要求。
+`term` 过滤器在倒排索引中查找 `XHDK-A-1293-#fJ3` 然后获取包含该 term 的所有文档。本例中，只有文档 1 满足我们要求。
 
-2. _创建位集（bitset）_ 。
+2. _创建 bitset_ 。
 +
-过滤器会创建一个 _位集（bitset）_ （一个包含 0 和 1 的数组），它描述了哪个文档会包含该词项（term）。匹配文档的标志位是 1 。本例中，位集的值为 `[1,0,0,0]` 。
+过滤器会创建一个 _bitset_ （一个包含 0 和 1 的数组），它描述了哪个文档会包含该 term 。匹配文档的标志位是 1 。本例中，bitset 的值为 `[1,0,0,0]` 。
 
-3. _缓存位集（bitset）_ 。
+3. _缓存 bitset_ 。
 +
-最后，位集（bitset）会被置于内存中，以供后续查询用来跳过 1、2 两步。这样做不仅能使过滤器处理的更快，而且性能也能获得提升。
+最后，bitset 会被置于内存中，以供后续查询用来跳过 1、2 两步。这样做不仅能使过滤器处理的更快，而且性能也能获得提升。
 
-当执行 `filtered` 查询时， `filter` 在 `query` 之前执行，所以 `filter` 会将位集（bitset）传入 `query` ， `query` 会依据集合的内容，直接跳过已被过滤器排除的文档，这是倚赖过滤器提高处理性能的一种方式，查询更少的文档可以使响应时间更短。
+当执行 `filtered` 查询时， `filter` 在 `query` 之前执行，所以 `filter` 会将 bitset 传入 `query` ， `query` 会依据集合的内容，直接跳过已被过滤器排除的文档，这是倚赖过滤器提高处理性能的一种方式，查询更少的文档可以使响应时间更短。
