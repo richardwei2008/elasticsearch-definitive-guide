@@ -297,4 +297,4 @@ Elasticsearch ((("completion suggester")))里的 {ref}/search-suggesters-complet
 // SENSE: 130_Partial_Matching/35_Postcodes.json
 
 <1> `postcode_index` 分析器使用 `postcode_filter` 将邮编转换成边界 n-gram 形式。
-<2> `postcode_search` 分析器可以将搜索词看成未 `not_indexed` 索引的。
+<2> `postcode_search` 分析器可以将搜索词看成 `not_indexed` 未索引的。
