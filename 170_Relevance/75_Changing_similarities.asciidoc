@@ -60,7 +60,7 @@ PUT /my_index
 }
 ------------------------------
 <1> 创建一个基于内置 `BM25` ，名为 `my_bm25` 的自定义相似度算法。
-<2> 禁用字段长规范化。参见 <<bm25-tunability,调试 BM25>> 。
+<2> 禁用字段长度规范化（field-length normalization）。参见 <<bm25-tunability,调试 BM25>> 。
 <3> `title` 字段使用自定义相似度算法 `my_bm25` 。
 <4> 字段 `body` 使用内置相似度算法 `BM25` 。
 
