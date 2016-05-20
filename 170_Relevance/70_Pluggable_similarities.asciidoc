@@ -31,7 +31,7 @@ Elasticsearch 的 `standard` 标准分析器（ `string` 字段默认使用）�
 image::images/elas_1706.png[TF/IDF 与 BM25 的词频饱和度]
 
 [[bm25-normalization]]
-===== 字段长规范化
+===== 字段长度规范化（Field-length normalization）
 
 在 <<field-norm,字段长规范化>> 中，我们提到过 Lucene 会认为较短字段比较长字段更重要：字段某个词的频度所带来的重要性会被这个字段长度抵消，但是实际的评分函数会将所有字段以同等方式对待。它认为所有较短的 `title` 字段比所有较长的 `body` 字段更重要。
 
