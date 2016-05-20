@@ -1,6 +1,6 @@
 === 最佳字段
 
-如果我们有个网站为用户允许博客内容搜索的功能，((("multifield search", "best fields queries")))((("best fields queries")))以下面两篇博客内容文档为例：
+假设有个网站允许用户搜索博客的内容，((("multifield search", "best fields queries")))((("best fields queries")))以下面两篇博客内容文档为例：
 
 [source,js]
 --------------------------------------------------
