@@ -166,7 +166,7 @@ _向量空间（vector space model）_ 提供一种比较多词查询的方式�
 设想如果查询 “happy hippopotamus” ，常见词 `happy` 的权重较低，不常见词 `hippopotamus` 权重较高，假设 `happy` 的权重是 2 ， `hippopotamus` 的权重是 5 ，可以将这个二维向量—— `[2,5]` ——在坐标系下作条直线，线的起点是 (0,0) 终点是 (2,5) ，如图 <<img-vector-query>> 。
 
 [[img-vector-query]]
-。表示 “happy hippopotamus” 的查询向量
+。表示 “happy hippopotamus” 的二维查询向量
 image::images/elas_17in01.png["The query vector plotted on a graph"]
 
 现在，设想我们有三个文档：
@@ -192,7 +192,7 @@ image::images/elas_17in02.png["The query and document vectors plotted on a graph
 
 在实际中，只有二维向量（两个词的查询）可以在平面上表示，幸运的是， _线性代数_ ——作为数学中处理向量的一个分支——为我们提供了计算两个多维向量间角度工具，这意味着可以使用如上同样的方式来解释多个词的查询。
 
-关于比较两个向量的更多信息可以参考 http://en.wikipedia.org/wiki/Cosine_similarity[_余弦近似度（cosine similarity）_].
+关于比较两个向量的更多信息可以参考 http://en.wikipedia.org/wiki/Cosine_similarity[_余弦近似度（cosine similarity）_]。
 
 ==================================================
 
