@@ -48,7 +48,7 @@ GET /_search
 
 ==== 过滤 vs. 查询
 
-首先要注意的是 `filter` 过滤器代替了 `query` 查询，((("filters", "in function_score query")))在本例中，我们无须使用全文搜索，只想找到所有 `city` 字段保护词 `Barcelona` 的文档，逻辑用过滤比用查询表达更清晰。过滤器返回的所有文档的评分 `_score` 的值为 `1` 。 `function_score` 查询接受 `query` 或 `filter` ，如果没有特别指定，则默认使用 `match_all` 查询。
+首先要注意的是 `filter` 过滤器代替了 `query` 查询，((("filters", "in function_score query")))在本例中，我们无须使用全文搜索，只想找到 `city` 字段中包含 `Barcelona` 的所有文档，逻辑用过滤比用查询表达更清晰。过滤器返回的所有文档的评分 `_score` 的值为 `1` 。 `function_score` 查询接受 `query` 或 `filter` ，如果没有特别指定，则默认使用 `match_all` 查询。
 
 ==== 函数 functions
 
