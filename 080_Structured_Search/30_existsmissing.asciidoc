@@ -17,9 +17,9 @@
 
 显然，世界并不简单，数据往往会有缺失字段，或有显式的空值或空数组。为了应对这些状况，Elasticsearch 提供了一些工具来处理空或缺失值。
 
-==== 存在过滤器
+==== 存在查询
 
-第一件武器就是 `exists` 存在过滤器。((("null values", "working with, using exists filter")))((("exists filter")))无论有值没值，这个过滤器都会返回指定字段的文档，让我们索引一些示例文档并用标签的例子来说明：
+第一件武器就是 `exists` 存在查询。((("null values", "working with, using exists query")))((("exists query")))无论有值没值，这个查询都会返回指定字段的文档，让我们索引一些示例文档并用标签的例子来说明：
 
 [source,js]
 --------------------------------------------------
@@ -62,14 +62,14 @@ FROM   posts
 WHERE  tags IS NOT NULL
 --------------------------------------------------
 
-在 Elasticsearch 中，使用 `exists` 过滤器的方式如下：
+在 Elasticsearch 中，使用 `exists` 查询的方式如下：
 
 [source,js]
 --------------------------------------------------
 GET /my_index/posts/_search
 {
     "query" : {
-        "filtered" : {
+        "constant_score" : {
             "filter" : {
                 "exists" : { "field" : "tags" }
             }
@@ -106,9 +106,9 @@ GET /my_index/posts/_search
 
 显而易见，只要 `tags` 字段存在项（term）的文档都会命中并作为结果返回，只有 3 和 4 两个文档被排除。
 
-==== 缺失过滤器
+==== 缺失查询
 
-这个 `missing` 过滤器本质上与 `exists` 过滤器恰好相反：((("null values", "working with, using missing filter")))((("missing filter")))它返回某个特定 _无_ 值字段的文档，与以下 SQL 表达的意思类似：
+这个 `missing` 查询本质上与 `exists` 恰好相反：((("null values", "working with, using missing query")))((("missing query")))它返回某个特定 _无_ 值字段的文档，与以下 SQL 表达的意思类似：
 
 [source,sql]
 --------------------------------------------------
@@ -117,14 +117,14 @@ FROM   posts
 WHERE  tags IS  NULL
 --------------------------------------------------
 
-我们将前面例子中 `exists` 过滤器换成 `missing` 过滤器：
+我们将前面例子中 `exists` 查询换成 `missing` 查询：
 
 [source,js]
 --------------------------------------------------
 GET /my_index/posts/_search
 {
     "query" : {
-        "filtered" : {
+        "constant_score" : {
             "filter": {
                 "missing" : { "field" : "tags" }
             }
@@ -170,7 +170,8 @@ GET /my_index/posts/_search
 
 ==== 对象上的存在与缺失
 
-不仅可以过滤核心类型， `exists` and `missing` 过滤器还可以处理一个对象的内部字段。以下面文档为例：
+不仅可以过滤核心类型， `exists` and `missing` 查询 ((("objects", "using exists/missing queries on")))
+((("exists query", "using on objects")))((("missing query", "using on objects"))) 还可以处理一个对象的内部字段。以下面文档为例：
 
 [source,js]
 --------------------------------------------------
@@ -192,7 +193,7 @@ GET /my_index/posts/_search
 }
 --------------------------------------------------
 
-那么我们如何用 `exists` 或 `missing` 过滤 `name` 字段呢？ `name` 字段并不真实存在于倒排索引中。
+那么我们如何用 `exists` 或 `missing` 查询 `name` 字段呢？ `name` 字段并不真实存在于倒排索引中。
 
 原因是当我们执行下面这个过滤的时候：
 
@@ -210,8 +211,8 @@ GET /my_index/posts/_search
 {
     "bool": {
         "should": [
-            { "exists": { "field": { "name.first" }}},
-            { "exists": { "field": { "name.last"  }}}
+            { "exists": { "field": "name.first" }},
+            { "exists": { "field": "name.last" }}
         ]
     }
 }
