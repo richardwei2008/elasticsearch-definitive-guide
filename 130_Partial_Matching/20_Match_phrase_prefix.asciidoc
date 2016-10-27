@@ -4,7 +4,7 @@
 
 例如，如果用户输入 `johnnie walker bl` ，我们希望在它们完成输入搜索条件前就能得到：Johnnie Walker Black Label 和 Johnnie Walker Blue Label 。
 
-生活总是这样，就像猫的花色远不只一种，我们希望能找到一种最简单的实现方式。并不需要对数据做任何准备，在查询时就能对任意的全文字段实现 _输入即搜索（search-as-you-type）_ 的查询。
+生活总是这样，就像猫的花色远不只一种！我们希望能找到一种最简单的实现方式。并不需要对数据做任何准备，在查询时就能对任意的全文字段实现 _输入即搜索（search-as-you-type）_ 的查询。
 
 在 <<phrase-matching,短语匹配>> 中，我们引入了 `match_phrase` 短语匹配查询，它匹配相对顺序一致的所有指定词语，对于查询时的输入即搜索，可以使用 `match_phrase` 的一种特殊形式，((("prefix query", "match_phrase_prefix query")))((("match_phrase_prefix query"))) `match_phrase_prefix` 查询：
 
