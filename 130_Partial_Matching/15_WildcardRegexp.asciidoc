@@ -1,3 +1,4 @@
+[[_wildcard_and_regexp_queries]]
 === 模糊与正则表达式查询
 
 与 `prefix` 前缀查询的特性类似， `wildcard` 模糊查询也是一种底层基于词的查询，((("wildcard query")))((("partial matching", "wildcard and regexp queries")))与前缀查询不同的是它允许指定匹配的正则式。它使用标准的 shell 模糊查询： `?` 匹配任意字符， `*` 匹配 0 或多个字符。((("postcodes (UK), partial matching with", "wildcard queries")))
