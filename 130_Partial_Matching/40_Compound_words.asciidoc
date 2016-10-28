@@ -20,9 +20,9 @@ _Rindfleischetikettierungsüberwachungsaufgabenübertragungsgesetz_::
 
 有些人希望在搜索 “Wörterbuch”（字典）的时候，能在结果中看到 “Aussprachewörtebuch”（发音字典）。同样，搜索 “Adler”（鹰）的时候，能将 “Weißkopfseeadler”（秃鹰）包括在结果中。
 
-处理这种语言的一种方式可以是将复合词拆分成各自部分，然后用
-{ref}/analysis-compound-word-tokenfilter.html[组合词 token 过滤器（compound word token filter）]，
-但这种方式的结果质量依赖于组合词字典的质量。
+处理这种语言的一种方式可以用
+{ref}/analysis-compound-word-tokenfilter.html[组合词 token 过滤器（compound word token filter）]
+将复合词拆分成各自部分，但这种方式的结果质量依赖于组合词字典的质量。
 
 另一种方式就是将所有的词用 n-gram 进行处理，然后搜索任何匹配的片段——能匹配的片段越多，文档的相关度越大。
 
@@ -155,4 +155,4 @@ GET /my_index/my_type/_search
 
 这有点像全文搜索中的猎枪法，可能会导致倒排索引内容变多，尽管如此，在索引具有很多复合词的语言，或词之间没有空格的语言（如：泰语）时，它仍不失为一种通用且有效方法。
 
-这种技术可以用来提升 _召回率_ ——搜索结果中相关的文档数。它通常会与其他技术，shingles（参见 <<shingles,shingles 瓦片词>> ）一起使用以提高精度和每个文档的相关度评分。
+这种技术可以用来提升 _召回率_ ——搜索结果中相关的文档数。它通常会与其他技术一起使用，例如 shingles（参见 <<shingles,shingles 瓦片词>> ），以提高精度和每个文档的相关度评分。
