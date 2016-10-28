@@ -1,7 +1,7 @@
 [[_ngrams_for_partial_matching]]
 === Ngrams 在部分匹配的应用
 
-之前提到：“只能在倒排索引中找到存在的词。尽管 `prefix` 、 `wildcard` 、 `regexp` 查询告诉我们这种说法并不完全正确，但单个词的查找 _确实_ 要比在词列表中盲目挨个查找的效率要高得多。((("partial matching", "index time optimizations", "n-grams")))在搜索之前准备好供部分匹配的数据可以提高搜索的性能。
+之前提到：“只能在倒排索引中找到存在的词。” 尽管 `prefix` 、 `wildcard` 、 `regexp` 查询告诉我们这种说法并不完全正确，但单个词的查找 _确实_ 要比在词列表中盲目挨个查找的效率要高得多。((("partial matching", "index time optimizations", "n-grams")))在搜索之前准备好供部分匹配的数据可以提高搜索的性能。
 
 在索引时准备数据意味着要选择合适的分析链，这里部分匹配使用的工具是 _n-gram_ 。((("n-grams")))可以将 _n-gram_ 看成一个在词语上 _移动窗口_ ， _n_ 代表这个 “窗口” 的长度。如果我们要 n-gram `quick` 这个词 —— 它的结果取决于 _n_ 的选择长度：
 
