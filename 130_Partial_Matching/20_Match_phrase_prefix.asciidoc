@@ -1,3 +1,4 @@
+[[_query_time_search_as_you_type]]
 === 查询时输入即搜索
 
 把邮编的事情先放一边，让我们先看看前缀查询是如何在全文查询中起作用的。((("partial matching", "query time search-as-you-type")))用户已经渐渐习惯在输完查询内容之前，就能为他们展现搜索结果，这就是所谓的 _即时搜索（instant search）_ 或 _输入即搜索（search-as-you-type）_ 。((("search-as-you-type")))((("instant search")))不仅用户能在更短的时间内得到搜索结果，我们也能引导用户搜索索引中真实存在的结果。
