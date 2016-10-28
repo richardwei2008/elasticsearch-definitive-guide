@@ -1,3 +1,4 @@
+[[_index_time_optimizations]]
 === 索引时优化
 
 到目前为止，所有谈论过的解决方案都是在 _查询时（query time）_ 实现的。((("index time optimizations")))((("partial matching", "index time optimizations")))这样做并不需要特殊的映射或特殊的索引模式，只是简单使用已经索引的数据。
