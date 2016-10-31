@@ -1,3 +1,4 @@
+[[_exact_value_fields]]
 === Exact-Value 精确值字段
 
 在结束多字段查询这个话题之前，我们最后要讨论的是精确值 `not_analyzed` 未分析字段。((("not_analyzed fields", "exact value, in multi-field queries")))((("multifield search", "exact value fields")))((("exact values", "exact value not_analyzed fields in multifield search")))((("analyzed fields", "avoiding mixing with not analyzed fields in multi_match queries")))将 `not_analyzed` 字段与 `multi_match` 中 `analyzed` 字段混在一起没有多大用处。
