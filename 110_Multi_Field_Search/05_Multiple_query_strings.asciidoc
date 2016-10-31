@@ -19,7 +19,7 @@ GET /_search
 --------------------------------------------------
 // SENSE: 110_Multi_Field_Search/05_Multiple_query_strings.json
 
-`bool` 查询的采取 _more-matches-is-better_ 匹配越多越好的方式，所以每条 `match` 语句的评分结果会被加在一起，从而为每个文档提供最终的分数 `_score` 。能与两条语句同时匹配的文档比只与一条语句匹配的文档得分要高。
+`bool` 查询采取 _more-matches-is-better_ 匹配越多越好的方式，所以每条 `match` 语句的评分结果会被加在一起，从而为每个文档提供最终的分数 `_score` 。能与两条语句同时匹配的文档比只与一条语句匹配的文档得分要高。
 
 当然，并不是只能使用 `match` 语句：可以用 `bool` 查询来包裹组合任意其他类型的查询，((("bool query", "nested bool query in")))甚至包括其他的 `bool` 查询。我们可以在上面的示例中添加一条语句来指定译者版本的偏好：
 
