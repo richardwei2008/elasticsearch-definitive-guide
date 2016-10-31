@@ -53,14 +53,7 @@ GET /_search
 [[prioritising-clauses]]
 ==== 语句的优先级
 
-<<<<<<< febd8f19cb8410d3e11b0f829db2b4eeb1f9082e
-It is likely that an even one-third split between clauses is not what we need for
-the preceding query. ((("multifield search", "multiple query strings", "prioritizing query clauses")))((("bool query", "prioritizing clauses"))) Probably we're more interested in the title and author
-clauses than we are in the translator clauses. We need to tune the query to
-make the title and author clauses relatively more important.
-=======
 前例中每条语句贡献三分之一评分的这种方式可能并不是我们想要的，((("multifield search", "multiple query strings", "prioritizing query clauses")))((("bool query", "prioritizing clauses")))我们可能对 title 和 author 两条语句更感兴趣，这样就需要调整查询，使 title 和 author 语句相对来说更重要。
->>>>>>> chapter14_part2: /110_Multi_Field_Search/05_Multiple_query_strings.asciidoc
 
 在武器库中，最容易使用的就是 `boost` 参数。为了提升 `title` 和 `author` 字段的权重，((("boost parameter", "using to prioritize query clauses")))((("weight", "using boost parameter to prioritize query clauses")))为它们分配的 `boost` 值大于 `1` ：
 
