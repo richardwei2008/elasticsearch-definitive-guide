@@ -1,3 +1,4 @@
+[[_single_query_string]]
 === 单字符串查询
 
 `bool` 查询是多语句查询的主干。((("multifield search", "single query string")))它的适用场景很多，特别是当需要将不同查询字符串映射到不同字段的时候。
