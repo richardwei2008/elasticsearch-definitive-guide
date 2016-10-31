@@ -1,3 +1,4 @@
+[[_best_fields]]
 === 最佳字段
 
 假设有个网站允许用户搜索博客的内容，((("multifield search", "best fields queries")))((("best fields queries")))以下面两篇博客内容文档为例：
