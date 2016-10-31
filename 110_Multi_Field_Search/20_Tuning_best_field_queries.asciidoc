@@ -1,3 +1,4 @@
+[[_tuning_best_fields_queries]]
 === 最佳字段查询调优
 
 当用户搜索 “quick pets” 时会发生什么呢？((("multifield search", "best fields queries", "tuning")))((("best fields queries", "tuning")))在前面的例子中，两个文档都包含词 `quick` ，但是只有文档 2 包含词 `pets` ，两个文档中都不具有同时包含 _两个词_ 的 _相同字段_ 。
