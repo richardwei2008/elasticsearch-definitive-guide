@@ -1,3 +1,4 @@
+[[_cross_fields_entity_search]]
 === 跨字段实体搜索
 
 现在讨论一种普遍的搜索模式：跨字段实体搜索（cross-fields entity search）。((("cross-fields entity search")))((("multifield search", "cross-fields entity search")))在如 `person` 、 `product` 或 `address` （人、产品或地址）这样的实体中，需要使用多个字段来唯一标识它的信息。 `person` 实体可能是这样索引的：
