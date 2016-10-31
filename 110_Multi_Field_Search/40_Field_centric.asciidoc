@@ -81,7 +81,7 @@ GET /_validate/query?explain
 
 逆向文档频率::
 
-    一个词在所有文档索引中出现的频率越高，这个词的相关度就越低。
+    一个词在所有文档某个字段索引中出现的频率越高，这个词的相关度就越低。
 
 当搜索多个字段时，TF/IDF ((("Term Frequency/Inverse Document Frequency  (TF/IDF) similarity algorithm", "surprising results when searching against multiple fields")))会带来某些令人意外的结果。
 
