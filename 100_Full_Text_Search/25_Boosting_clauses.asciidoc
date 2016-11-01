@@ -1,6 +1,6 @@
 === 查询语句提升权重
 
-当然 `bool` 查询不仅限于组合简单的单个词 `match` 查询，((("full text search", "boosting query clauses")))它可以组合任意其他的查询，以及其他 `bool` 查询。((("relevance scores", "controlling weight of query clauses")))通常的使用方法是为每个文档优化相关度评分 `_score` 计算，然后对多个不同查询的评分结果进行汇总。
+当然 `bool` 查询不仅限于组合简单的单个词 `match` 查询，((("full text search", "boosting query clauses")))它可以组合任意其他的查询，以及其他 `bool` 查询。((("relevance scores", "controlling weight of query clauses")))普遍的用法是通过汇总多个独立查询的分数，从而达到为每个文档微调其相关度评分 `_score` 的目的。
 
 假设想要查询关于 “full-text search（全文搜索）” 的文档，((("bool query", "boosting weight of query clauses")))((("weight", "controlling for query clauses")))但我们希望为提及 “ElasticSearch” 或 “Lucene” 的文档给予更高的 _权重_ ，这里 _更高权重_ 是指如果文档中出现 “ElasticSearch” 或 “Lucene” ，它们会比没有的出现这些词的文档获得更高的相关度评分 `_score` ，也就是说，它们会出现在结果集的更上面。
 
@@ -35,7 +35,7 @@ GET /_search
 
 `should` 语句匹配得越多表示文档的相关度越高。目前为止还挺好。
 
-但是如果我们想让包含 `Lucene` 的文档比包含 `Elasticsearch` 的文档更相关，该如何处理？
+但是如果我们想让包含 `Lucene` 的有更高的权重，并且包含 `Elasticsearch` 的语句比 `Lucene` 的权重更高，该如何处理?
 
 我们可以通过指定 `boost` ((("boost parameter")))来控制任何查询语句的相对的权重， `boost` 的默认值为 `1` ，大于 `1` 会提升一个语句的相对权重。所以下面重写之前的查询：
 
@@ -87,4 +87,4 @@ GET /_search
 如果不基于 TF/IDF 要实现自己的评分模型，我们就需要对权重提升的过程能有更多控制，可以使用 <<function-score-query,`function_score` 查询>>操纵一个文档的权重提升方式而跳过规范化这一步骤。
 ====
 
-更多的组合查询方式会在下章<<multi-field-search, 多字段搜索>>中介绍，但在此之前，让我们先看另外 一个重要的查询特性：文本分析（text analysis）。
+更多的组合查询方式会在下章<<multi-field-search, 多字段搜索>>中介绍，但在此之前，让我们先看另外一个重要的查询特性：文本分析（text analysis）。
