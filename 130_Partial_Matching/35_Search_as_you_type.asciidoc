@@ -20,7 +20,11 @@
 }
 --------------------------------------------------
 
+<<<<<<< HEAD
 这个配置的意思是：对于这个 token 过滤器接收的任意词项，过滤器会为之生成一个最小固定值为 1 ，最大为 20 的 n-gram 。
+=======
+这个配置的意思是：它对所有这个 token 过滤器收到的词，都会为之生成一个 n-gram ，这个固定词语开始位置的 n-gram 最小长度为 1 ，最大长度为 20 。
+>>>>>>> origin/p2_chapter16/35_Search_as_you_type
 
 然后会在一个自定义分析器 `autocomplete` 中使用上面这个 token 过滤器：((("analyzers", "autocomplete custom analyzer")))
 
