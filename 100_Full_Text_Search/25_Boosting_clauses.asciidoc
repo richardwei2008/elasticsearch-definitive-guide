@@ -1,3 +1,4 @@
+[[_boosting_query_clauses]]
 === 查询语句提升权重
 
 当然 `bool` 查询不仅限于组合简单的单个词 `match` 查询，((("full text search", "boosting query clauses")))它可以组合任意其他的查询，以及其他 `bool` 查询。((("relevance scores", "controlling weight of query clauses")))普遍的用法是通过汇总多个独立查询的分数，从而达到为每个文档微调其相关度评分 `_score` 的目的。
