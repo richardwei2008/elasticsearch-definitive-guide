@@ -1,3 +1,4 @@
+[[_how_match_uses_bool]]
 === 如何使用布尔匹配
 
 目前为止，可能已经意识到<<match-multi-word,多词 `match` 查询>>只是简单地将生成的 `term` 查询包裹((("match query", "use of bool query in multi-word searches")))((("bool query", "use by match query in multi-word searches")))((("full text search", "how match query uses bool query")))在一个 `bool` 查询中。如果使用默认的 `or` 操作符，每个 `term` 查询都被当作 `should` 语句，这样就要求必须至少匹配一条语句。以下两个查询是等价的：
