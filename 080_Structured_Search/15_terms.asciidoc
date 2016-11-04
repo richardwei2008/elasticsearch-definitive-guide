@@ -1,3 +1,4 @@
+[[_finding_multiple_exact_values]]
 === 查找多个精确值
 
 `term` 查询对于查找单个值非常有用，但通常我们可能想搜索多个值。((("exact values", "finding multiple")))((("structured search", "finding multiple exact values")))  如果我们想要查找价格字段值为 $20 或 $30 的文档该如何处理呢？
