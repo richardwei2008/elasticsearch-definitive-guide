@@ -1,4 +1,5 @@
-=== 处理空值
+[[_dealing_with_null_values]]
+=== 处理 Null 值
 
 回想在之前例子中，有文档名称为 `tags` （标签）的字段，它是个多值字段，((("structured search", "dealing with null values")))((("null values")))一个文档可能有一个或多个标签，也可能根本就没有标签。如果一个字段没有值，那么如何将它存入倒排索引中的呢？
 
