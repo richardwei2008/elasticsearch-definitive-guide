@@ -72,7 +72,7 @@
 
 ==== 提升单个字段的权重
 
-可以使用扬字符（ `^` ）的语法为单个字段提升权重，在字段名称的末尾添加 `^boost` ，((("multi_match queries", "boosting individual fields")))((("boost parameter", "boosting individual fields in multi_match queries")))其中 `boost` 是一个浮点数：
+可以使用 `^` 字符语法为单个字段提升权重，在字段名称的末尾添加 `^boost` ，((("multi_match queries", "boosting individual fields")))((("boost parameter", "boosting individual fields in multi_match queries")))其中 `boost` 是一个浮点数：
 
 [source,js]
 --------------------------------------------------
