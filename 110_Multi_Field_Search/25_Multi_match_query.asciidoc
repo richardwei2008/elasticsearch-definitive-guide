@@ -8,7 +8,7 @@
 `multi_match` 多匹配查询的类型有多种，其中的三种恰巧与 <<know-your-data,了解我们的数据>> 中介绍的三个场景对应，即： `best_fields` 、 `most_fields` 和 `cross_fields` （最佳字段、多数字段、跨字段）。
 ====
 
-默认情况下，下面查询的类型是 `best_fields` ，((("best fields queries", "multi-match queries")))((("dis_max (disjunction max) query", "multi_match query wrapped in")))这表示它会为每个字段生成一个 `match` 查询，然后将它们组合到 `dis_max` 查询的内部，如下：
+默认情况下，查询的类型是 `best_fields` ，((("best fields queries", "multi-match queries")))((("dis_max (disjunction max) query", "multi_match query wrapped in")))这表示它会为每个字段生成一个 `match` 查询，然后将它们组合到 `dis_max` 查询的内部，如下：
 
 [source,js]
 --------------------------------------------------
