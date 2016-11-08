@@ -1,7 +1,7 @@
 [[custom-all]]
 === 自定义 _all 字段
 
-在 <<all-field,all-field>> 字段中，我们解释过 `_all` 字段的索引方式是将所有其他字段的值作为一个大字符串索引的。((("_all field", sortas="all field")))((("multifield search", "custom _all fields")))尽管这么做并不十分灵活，但可以给人名添加一个自定义 `_all` 字段，再为地址添加另一个 `_all` 字段。
+在 <<all-field,all-field>> 字段中，我们解释过 `_all` 字段的索引方式是将所有其他字段的值作为一个大字符串索引的。((("_all field", sortas="all field")))((("multifield search", "custom _all fields")))然而这么做并不十分灵活，（为了变得灵活）我们可以给人名添加一个自定义 `_all` 字段，再为地址添加另一个 `_all` 字段。
 
 Elasticsearch 在字段映射中为我们提供了 `copy_to` 参数来实现这个功能：
 
