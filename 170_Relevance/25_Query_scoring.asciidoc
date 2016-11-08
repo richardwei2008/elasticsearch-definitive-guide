@@ -1,7 +1,7 @@
 [[query-scoring]]
 === 使用查询结构修改相关度
 
-Elasticsearch 的查询表达式相当灵活，((("relevance", "controlling", "manipulating relevance with query structure")))((("queries", "manipulating relevance with query structure")))可以通过在查询结构中，移动查询语句的位置来或多或少的改变它们的重要性，比如，设想下面这个查询：
+Elasticsearch 的查询表达式相当灵活，((("relevance", "controlling", "manipulating relevance with query structure")))((("queries", "manipulating relevance with query structure")))可以通过调整查询结构中查询语句的所处层次，从而或多或少改变其重要性，比如，设想下面这个查询：
 
     quick OR brown OR red OR fox
 
