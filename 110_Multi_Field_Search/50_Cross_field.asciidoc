@@ -77,6 +77,7 @@ GET /_validate/query?explain
     )
 
 当在使用 `minimum_should_match` 和 `operator` 参数时，这点尤为重要。
+
 ==================================================
 
 ==== 按字段提高权重
