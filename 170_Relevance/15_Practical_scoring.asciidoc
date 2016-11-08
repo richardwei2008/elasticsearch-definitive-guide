@@ -51,27 +51,27 @@ score(q,d)  =  <1>
 ................................
 
 <1> `score(q,d)` 是文档 `d` 与查询 `q` 的相关度评分。
-<2> `queryNorm(q)` 是 <<query-norm,_查询规范化_ 因子>> （新）。
+<2> `queryNorm(q)` 是 <<query-norm,_查询归一化_ 因子>> （新）。
 <3> `coord(q,d)` 是 <<coord,_协调_ 因子>> （新）。
 <4> 查询 `q` 中每个词 `t` 对于文档 `d` 的权重和。
 <5> `tf(t in d)` 是词 `t` 在文档 `d` 中的 <<tf,词频>> 。
 <6> `idf(t)` 是词 `t` 的 <<idf,逆向文档频率>> 。
 <7> `t.getBoost()` 是查询中使用的 <<query-time-boosting,_boost_>>（新）。
-<8> `norm(t,d)` 是 <<field-norm,字段长度规范值>> ，与 <<index-boost,索引时字段层 boost>> （如果存在）的和（新）。
+<8> `norm(t,d)` 是 <<field-norm,字段长度归一值>> ，与 <<index-boost,索引时字段层 boost>> （如果存在）的和（新）。
 
-应该认识 `score` 、 `tf` 和 `idf` 。 `queryNorm` 、 `coord` 、 `t.getBoost` 和 `norm` 是新的。
+上节已介绍过 `score` 、 `tf` 和 `idf` 。现在来介绍 `queryNorm` 、 `coord` 、 `t.getBoost` 和 `norm` 。
 
-我们会在本章后面继续探讨 <<query-time-boosting,查询时的权重提升>> 的问题，但是首先需要了解查询规范化、协调和索引时字段层面的权重提升等概念。
+我们会在本章后面继续探讨 <<query-time-boosting,查询时的权重提升>> 的问题，但是首先需要了解查询归一化、协调和索引时字段层面的权重提升等概念。
 
 [[query-norm]]
-==== 查询规范因子
+==== 查询归一因子
 
-_查询规范因子_ （ `queryNorm` ）试图将查询 _规范化_ ，((("practical scoring function", "query normalization factor")))((("query normalization factor")))((("normalization", "query normalization factor")))这样就能将两个不同的查询结果相比较。
+_查询归一因子_ （ `queryNorm` ）试图将查询 _归一化_ ，((("practical scoring function", "query normalization factor")))((("query normalization factor")))((("normalization", "query normalization factor")))这样就能将两个不同的查询结果相比较。
 
 [TIP]
 ==================================================
 
-尽管查询规范值的目的是为了使查询结果之间能够相互比较，但是它并不十分有效，因为相关度评分 `_score` 的目的是为了将当前查询的结果进行排序，比较不同查询结果的相关度评分没有太大意义。
+尽管查询归一值的目的是为了使查询结果之间能够相互比较，但是它并不十分有效，因为相关度评分 `_score` 的目的是为了将当前查询的结果进行排序，比较不同查询结果的相关度评分没有太大意义。
 
 ==================================================
 
@@ -82,7 +82,7 @@ queryNorm = 1 / √sumOfSquaredWeights <1>
 ..........................
 <1> `sumOfSquaredWeights` 是查询里每个词的 IDF 的平方和。
 
-TIP: 相同查询规范化因子会被应用到每个文档，不能被更改，总而言之，可以被忽略。
+TIP: 相同查询归一化因子会被应用到每个文档，不能被更改，总而言之，可以被忽略。
 
 [[coord]]
 ==== 查询协调
@@ -149,21 +149,21 @@ GET /_search
 
 我们会讨论 <<query-time-boosting,查询时的权重提升>>，让字段 _权重提升_ 就是让某个字段比其他字段更重要。((("indexing", "field-level index time boosts")))((("boosting", "index time field-level boosting")))((("practical scoring function", "index time field-level boosting")))当然在索引时也能做到如此。实际上，权重的提升会被应用到字段的每个词，而不是字段本身。
 
-将提升值存储在索引中无须更多空间，这个字段层索引时的提升值与字段长度规范值（参见 <<field-norm,字段长度规范值>> ）((("field-length norm")))一起作为单个字节存于索引， `norm(t,d)` 是前面公式的返回值。
+将提升值存储在索引中无须更多空间，这个字段层索引时的提升值与字段长度归一值（参见 <<field-norm,字段长度归一值>> ）((("field-length norm")))一起作为单个字节存于索引， `norm(t,d)` 是前面公式的返回值。
 
 [WARNING]
 =========================================
 
-我们不建议使用字段层索引时的权重提升方法，有以下原因：
+我们不建议在建立索引时对字段提升权重，有以下原因：
 
-*  将提升值与字段长度规范值合在单个字节中存储会丢失字段长度规范值的精度，这样会导致 Elasticsearch 不知如何区分包含三个词的字段和包含五个词的字段。
+*  将提升值与字段长度归一值合在单个字节中存储会丢失字段长度归一值的精度，这样会导致 Elasticsearch 不知如何区分包含三个词的字段和包含五个词的字段。
 
 *  要想改变索引时的提升值，就必须重新为所有文档建立索引，与此不同的是，查询时的提升值可以随着每次查询的不同而更改。
 
 *  如果一个索引时权重提升的字段有多个值，提升值会按照每个值来自乘，这会导致该字段的权重急剧上升。
 
-<<query-time-boosting,查询时的权重提升>> 更简单、清楚，以及更灵活的选择。
+<<query-time-boosting,查询时赋予权重>> 是更为简单、清楚、灵活的选择。
 
 =========================================
 
-了解了查询规范化、协同和索引时权重提升这些方式后，可以进一步了解相关度计算最有用的工具：查询时的权重提升。((("relevance", "controlling", "Lucene&#x27;s practical scoring function", range="endofrange", startref="ix_relcontPCF")))
+了解了查询归一化、协同和索引时权重提升这些方式后，可以进一步了解相关度计算最有用的工具：查询时的权重提升。((("relevance", "controlling", "Lucene&#x27;s practical scoring function", range="endofrange", startref="ix_relcontPCF")))
