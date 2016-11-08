@@ -83,7 +83,7 @@ GET /_validate/query?explain
 
 采用 `cross_fields` 查询与 <<custom-all,自定义 `_all` 字段>> 相比，其中一个优势就是它可以在搜索时为单个字段提升权重。((("cross-fields queries", "per-field boosting")))((("boosting", "per-field boosting in cross-fields queries")))
 
-这对像 `first_name` 和 `last_name` 具有相同值的字段并不是必须的，但如果要用 `title` 和 `description` 字段搜索图书，可能希望为 `title` 分配更多的权重，这同样可以使用前面介绍过的 脱字号（ `^` ）语法来实现：
+这对像 `first_name` 和 `last_name` 具有相同值的字段并不是必须的，但如果要用 `title` 和 `description` 字段搜索图书，可能希望为 `title` 分配更多的权重，这同样可以使用前面介绍过的 `^` 符号语法来实现：
 
 [source,js]
 --------------------------------------------------
@@ -101,4 +101,4 @@ GET /books/_search
 
 <1> `title` 字段的权重提升值为 `2` ， `description` 字段的权重提升值默认为 `1` 。
 
-能够为单个字段指定权重提升值所带来的优势，取决于在多字段查询与单字段自定义 `_all` 之间代价的权衡，即哪种方案会给带来更大的（性能）压力。
+自定义单字段查询是否能够优于多字段查询，取决于在多字段查询与单字段自定义 `_all` 之间代价的权衡，即哪种解决方案会带来更大的性能优化就选择哪一种。
