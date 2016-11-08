@@ -1,7 +1,7 @@
 [[scoring-theory]]
 === 相关度评分背后的理论
 
-Lucene（或 Elasticsearch）使用 http://en.wikipedia.org/wiki/Standard_Boolean_model[_布尔模型（Boolean model）_] 查找匹配文档，((("relevance scores", "theory behind", id="ix_relscore", range="startofrange")))((("Boolean Model")))并用一个名为 <<practical-scoring-function,_实用评分函数（practical scoring function）_>> 的公式来计算相关度。这个公式借鉴了 http://en.wikipedia.org/wiki/Tfidf[_词频/逆向文档频率（term frequency/inverse document frequency）_] 和 http://en.wikipedia.org/wiki/Vector_space_model[_向量空间模型（vector space model）_]，同时也加入了一些现代的新特性，如协调因子（coordination factor），字段长度规范化（field length normalization），以及词或查询语句权重提升。
+Lucene（或 Elasticsearch）使用 http://en.wikipedia.org/wiki/Standard_Boolean_model[_布尔模型（Boolean model）_] 查找匹配文档，((("relevance scores", "theory behind", id="ix_relscore", range="startofrange")))((("Boolean Model")))并用一个名为 <<practical-scoring-function,_实用评分函数（practical scoring function）_>> 的公式来计算相关度。这个公式借鉴了 http://en.wikipedia.org/wiki/Tfidf[_词频/逆向文档频率（term frequency/inverse document frequency）_] 和 http://en.wikipedia.org/wiki/Vector_space_model[_向量空间模型（vector space model）_]，同时也加入了一些现代的新特性，如协调因子（coordination factor），字段长度归一化（field length normalization），以及词或查询语句权重提升。
 
 [NOTE]
 ====
@@ -11,7 +11,7 @@ Lucene（或 Elasticsearch）使用 http://en.wikipedia.org/wiki/Standard_Boolea
 [[boolean-model]]
 ==== 布尔模型
 
-_布尔模型（Boolean Model）_ 只是将 `AND` 、 `OR` 和 `NOT` （与、或和非）这样的条件在查询中使用以匹配文档，((("and operator")))((("not operator")))((("or operator")))以下查询：
+_布尔模型（Boolean Model）_ 只是在查询中使用 `AND` 、 `OR` 和 `NOT` （与、或和非）这样的条件来查找匹配的文档，((("and operator")))((("not operator")))((("or operator")))以下查询：
 
     full AND text AND search AND (elasticsearch OR lucene)
 
@@ -54,7 +54,7 @@ PUT /my_index
   }
 }
 --------------------------
-<1> 将参数 `index_options` 设置为 `docs` 可以禁用词频统计及词频位置，这个映射的字段不会计算词的出现次数，对于短语或近似查询也不可用。精确值 `not_analyzed` 字符串字段默认使用该设置。
+<1> 将参数 `index_options` 设置为 `docs` 可以禁用词频统计及词频位置，这个映射的字段不会计算词的出现次数，对于短语或近似查询也不可用。要求精确查询的 `not_analyzed` 字符串字段会默认使用该设置。
 
 [[idf]]
 ===== 逆向文档频率
@@ -67,16 +67,16 @@ idf(t) = 1 + log ( numDocs / (docFreq + 1)) <1>
 <1> 词 `t` 的逆向文档频率（ `idf` ）是：索引中文档数量除以所有包含该词的文档数，然后求其对数。
 
 [[field-norm]]
-===== 字段长度规范值
+===== 字段长度归一值
 
-字段的长度是多少？((("Term Frequency/Inverse Document Frequency  (TF/IDF) similarity algorithm", "field-length norm")))((("field-length norm")))字段越短，字段的权重 _越高_ 。如果词出现在类似标题 `title` 这样的字段，要比它出现在内容 `body` 这样的字段中的相关度更高。字段长度的规范值公式如下：
+字段的长度是多少？((("Term Frequency/Inverse Document Frequency  (TF/IDF) similarity algorithm", "field-length norm")))((("field-length norm")))字段越短，字段的权重 _越高_ 。如果词出现在类似标题 `title` 这样的字段，要比它出现在内容 `body` 这样的字段中的相关度更高。字段长度的归一值公式如下：
 
 ..........................
 norm(d) = 1 / √numTerms <1>
 ..........................
-<1> 字段长度规范值（ `norm` ）是字段中词数平方根的倒数。
+<1> 字段长度归一值（ `norm` ）是字段中词数平方根的倒数。
 
-字段长度的规范值对全文搜索非常重要，((("string fields", "field-length norm")))许多其他字段不需要有规范值。无论文档是否包括这个字段，索引中每个文档的每个 `string` 字段都大约占用 1 个 byte 的空间。精确值 `not_analyzed` 字符串字段的规范值默认是禁用的，也可以通过修改 `analyzed` 字段映射将其禁用：
+字段长度的归一值对全文搜索非常重要，((("string fields", "field-length norm")))许多其他字段不需要有归一值。无论文档是否包括这个字段，索引中每个文档的每个 `string` 字段都大约占用 1 个 byte 的空间。对于 `not_analyzed` 字符串字段的归一值默认是禁用的，而对于 `analyzed` 字段也可以通过修改字段映射禁用归一值：
 
 [source,json]
 --------------------------
@@ -94,13 +94,13 @@ PUT /my_index
   }
 }
 --------------------------
-<1> 这个字段不会将字段长度规范值考虑在内，长字段和短字段会以相同长度计算评分。
+<1> 这个字段不会将字段长度归一值考虑在内，长字段和短字段会以相同长度计算评分。
 
-对于有些应用场景如日志，规范值不是很有用，要关心的只是字段是否包含特殊的错误码或者特定的浏览器唯一标识符。字段的长度对结果没有影响，禁用规范值可以节省大量内存空间。
+对于有些应用场景如日志，归一值不是很有用，要关心的只是字段是否包含特殊的错误码或者特定的浏览器唯一标识符。字段的长度对结果没有影响，禁用归一值可以节省大量内存空间。
 
 ===== 结合使用
 
-以下三个因素——词频（term frequency）、逆向文档频率（inverse document frequency）和字段长度规范值（field-length norm）——是在索引时计算并存储的。((("weight", "calculation of")))将它们结合在一起计算单个词在特定文档中的 _权重_ 。
+以下三个因素——词频（term frequency）、逆向文档频率（inverse document frequency）和字段长度归一值（field-length norm）——是在索引时计算并存储的。((("weight", "calculation of")))最后将它们结合在一起计算单个词在特定文档中的 _权重_ 。
 
 [TIP]
 ==================================================
@@ -141,20 +141,20 @@ result of:
 <1> 词 `fox` 在文档的内部 Lucene doc ID 为 `0` ，字段是 `text` 里的最终评分。
 <2> 词 `fox` 在该文档 `text` 字段中只出现了一次。
 <3> `fox` 在所有文档 `text` 字段索引的逆向文档频率。
-<4> 该字段的字段长度规范值。
+<4> 该字段的字段长度归一值。
 
-当然，查询通常不止一个词，所以需要一种合并多词权重的方式——向量空间（vector space model）。
+当然，查询通常不止一个词，所以需要一种合并多词权重的方式——向量空间模型（vector space model）。
 
 [[vector-space-model]]
-==== 向量空间
+==== 向量空间模型
 
-_向量空间（vector space model）_ 提供一种比较多词查询的方式，((("Vector Space Model")))单个评分代表文档与查询的匹配程度，为了做到这点，这个模型将文档和查询都以 _向量（vectors）_ 的形式表示：
+_向量空间模型（vector space model）_ 提供一种比较多词查询的方式，((("Vector Space Model")))单个评分代表文档与查询的匹配程度，为了做到这点，这个模型将文档和查询都以 _向量（vectors）_ 的形式表示：
 
 向量实际上就是包含多个数的一维数组，例如：
 
     [1,2,5,22,3,8]
 
-在向量空间模型里，((("Term Frequency/Inverse Document Frequency  (TF/IDF) similarity algorithm", "in Vector Space Model")))向量里的每个数字都代表一个词的 _权重_ ，与 <<tfidf,词频/逆向文档频率（term frequency/inverse document frequency）>> 计算方式类似。
+在向量空间模型里，((("Term Frequency/Inverse Document Frequency  (TF/IDF) similarity algorithm", "in Vector Space Model")))向量空间模型里的每个数字都代表一个词的 _权重_ ，与 <<tfidf,词频/逆向文档频率（term frequency/inverse document frequency）>> 计算方式类似。
 
 [TIP]
 ==================================================
