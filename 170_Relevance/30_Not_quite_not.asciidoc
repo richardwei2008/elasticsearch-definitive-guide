@@ -1,7 +1,7 @@
 [[not-quite-not]]
 === 不完全不
 
-在互联网上搜索 “Apple”，返回的结果很可能是一个公司、水果和各种食谱。((("relevance", "controlling", "must_not clause in bool query")))((("bool query", "must_not clause")))我们可以将查询结果的范围缩小至只返回公司，然后排除 `pie` 、 `tart` 、 `crumble` 和 `tree` 这样的词，在 `bool` 查询中用 `must_not` 语句来实现：
+在互联网上搜索 “Apple”，返回的结果很可能是一个公司、水果和各种食谱。((("relevance", "controlling", "must_not clause in bool query")))((("bool query", "must_not clause")))我们可以在 `bool` 查询中用 `must_not` 语句来排除像 `pie` 、 `tart` 、 `crumble` 和 `tree` 这样的词，从而将查询结果的范围缩小至只返回与 “Apple” （苹果）公司相关的结果：
 
 [source,json]
 -------------------------------
@@ -54,6 +54,6 @@ GET /_search
 }
 -------------------------------
 
-它接受 `positive` 和 `negative` 查询，((("positive query and negative query (in boosting query)")))不仅将只与 `positive` 查询匹配的文档包括在结果列表中，而且将与 `negative` 查询匹配的文档的原始评分 `_score` ((("negative_boost")))与 `negative_boost` 相乘。
+它接受 `positive` 和 `negative` 查询。((("positive query and negative query (in boosting query)")))不仅将只匹配 `positive` 查询的文档罗列出来，除此之外，还会列出将匹配 `negative` 的查询所得文档的原始 `_score` ((("negative_boost")))与 `negative_boost` 的方式降级后的结果。
 
 为了达到效果， `negative_boost` 的值必须小于 `1.0` 。在这个示例中，所有包含负向词的文档评分 `_score` 都会减半。
