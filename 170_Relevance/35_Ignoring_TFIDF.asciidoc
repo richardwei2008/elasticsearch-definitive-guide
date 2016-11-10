@@ -86,7 +86,7 @@ GET /_search
 
 NOTE: 最终的评分并不是所有匹配语句的简单求和， <<coord,协调因子（coordination factor）>> 和 <<query-norm,查询规范化因子（query normalization factor）>> 仍然会被考虑在内。
 
-我们可以加一个 `not_analyzed` `features` 字段提升进度假屋文档的匹配能力：
+我们可以加一个 `not_analyzed` `features` 字段提升度假屋文档的匹配能力：
 
 [source,json]
 ------------------------------
@@ -95,7 +95,7 @@ NOTE: 最终的评分并不是所有匹配语句的简单求和， <<coord,协�
 
 默认情况下，一个 `not_analyzed` 字段会禁用 <<field-norm,字段长度规范值（field-length norms）>> 的功能，((("not_analyzed fields", "field length norms and index_options")))并将 `index_options` 设为 `docs` 选项，禁用 <<tf,词频>> ，但还是存在问题：每个词的 <<idf,逆向文档频率>> 仍然会被考虑。
 
-我们在 `constant_score` 查询中用前面用过的方法来解决这个问题：
+可以采用与之前相同的方法 `constant_score` 查询来解决这个问题：
 
 [source,json]
 ------------------------------
