@@ -235,10 +235,10 @@ PUT /my_index/my_type/_mapping
 
 <1> 在索引时，使用 `autocomplete` 分析器生成边界 n-grams 的每个词。
 
-<2> 在搜索时，使用 `standard` 分析器搜索用户输入的词。
+<2> 在搜索时，使用 `standard` 分析器只搜索用户输入的词。
 
 
-如果再次用 `validate-query` API 查看请求，现在的 explanation 解释为：
+如果再次请求 `validate-query` API ，当前的解释为：
 
     name:brown name:fo
 
@@ -246,14 +246,14 @@ PUT /my_index/my_type/_mapping
 
 因为大多数工作是在索引时完成的，所有的查询只要查找 `brown` 和 `fo` 这两个词，这比使用 `match_phrase_prefix` 查找所有以 `fo` 开始的词的方式要高效许多。
 
-.完成建议者（Completion Suggester）
+.补全提示（Completion Suggester）
 *************************************************
 
 使用边界 n-grams 进行输入即搜索（search-as-you-type）的查询设置简单、灵活且快速，但有时候它并不够快，特别是当试图立刻获得反馈时，延迟的问题就会凸显，很多时候不搜索才是最快的搜索方式。
 
 Elasticsearch ((("completion suggester")))里的 {ref}/search-suggesters-completion.html[completion suggester] 采用与上面完全不同的方式，需要为搜索条件生成一个所有可能完成的词列表，然后将它们置入一个 _有限状态机（finite state transducer）_ 内，((("Finite State Transducer")))这是个经优化的图结构。为了搜索建议提示，Elasticsearch 从图的开始处顺着匹配路径一个字符一个字符地进行匹配，一旦它处于用户输入的末尾，Elasticsearch 就会查找所有可能结束的当前路径，然后生成一个建议列表。
 
-本数据结构存于内存中，能使前缀查找非常快，比任何一种基于词的查询都要快很多，这对名字或品牌的自动完成非常适用，因为这些词通常是以普通顺序组织的：用 “Johnny Rotten” 而不是 “Rotten Johnny” 。
+本数据结构存于内存中，能使前缀查找非常快，比任何一种基于词的查询都要快很多，这对名字或品牌的自动补全非常适用，因为这些词通常是以普通顺序组织的：用 “Johnny Rotten” 而不是 “Rotten Johnny” 。
 
 当词序不是那么容易被预见时，边界 n-grams 比完成建议者（Completion Suggester）更合适。即使说不是所有猫都是一个花色，那这只猫的花色也是相当特殊的。
 
@@ -298,4 +298,4 @@ Elasticsearch ((("completion suggester")))里的 {ref}/search-suggesters-complet
 // SENSE: 130_Partial_Matching/35_Postcodes.json
 
 <1> `postcode_index` 分析器使用 `postcode_filter` 将邮编转换成边界 n-gram 形式。
-<2> `postcode_search` 分析器可以将搜索词看成 `not_indexed` 未索引的。
+<2> `postcode_search` 分析器可以将搜索词看成 `not_analyzed` 未分析的。
