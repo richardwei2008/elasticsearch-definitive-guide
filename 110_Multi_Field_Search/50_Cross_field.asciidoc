@@ -1,7 +1,7 @@
 [[_cross_fields_queries]]
 === cross-fields 跨字段查询
 
-自定义 `_all` 的方式是一个好的解决方案，只需在索引文档前为其设置好映射。((("multifield search", "cross-fields queries")))((("cross-fields queries")))不过， Elasticsearch 还在搜索时提供了相应的解决方案：使用类型 `cross_fields` 进行 `multi_match` 查询。 `cross_fields` 使用词中心式（term-centric）的查询方式，这与 `best_fields` 和 `most_fields` 使用字段中心式（field-centric）的查询方式非常不同，它将所有字段当成一个大字段，并在 _每个字段_ 中查找 _每个词_ 。
+自定义 `_all` 的方式是一个好的解决方案，只需在索引文档前为其设置好映射。((("multifield search", "cross-fields queries")))((("cross-fields queries")))不过， Elasticsearch 还在搜索时提供了相应的解决方案：使用 `cross_fields` 类型进行 `multi_match` 查询。 `cross_fields` 使用词中心式（term-centric）的查询方式，这与 `best_fields` 和 `most_fields` 使用字段中心式（field-centric）的查询方式非常不同，它将所有字段当成一个大字段，并在 _每个字段_ 中查找 _每个词_ 。
 
 为了说明字段中心式（field-centric）与词中心式（term-centric）这两种查询方式的不同，((("field-centric queries", "differences between term-centric queries and")))((("most fields queries", "explanation for field-centric approach")))先看看以下字段中心式的 `most_fields` 查询的 `explanation` 解释：
 
