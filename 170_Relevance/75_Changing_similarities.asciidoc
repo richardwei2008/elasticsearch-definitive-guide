@@ -25,7 +25,7 @@ PUT /my_index
 <1> `title` 字段使用 BM25 相似度算法。
 <2> `body` 字段用默认相似度算法（参见 <<practical-scoring-function,实用评分函数>>）。
 
-目前，Elasticsearch 不支持更改变已有字段的相似度算法 `similarity` 映射，只能通过为数据重新建立索引来达到目的。
+目前，Elasticsearch 不支持更改已有字段的相似度算法 `similarity` 映射，只能通过为数据重新建立索引来达到目的。
 
 ==== 配置 BM25
 
