@@ -16,7 +16,7 @@ BM25 同样使用词频、逆向文档频率以及字段长规范化，但是每
 
 TF/IDF 和 BM25 同样使用 <<idf,逆向文档频率>> 来区分普通词（不重要）和非普通词（重要），((("inverse document frequency", "use by TF/IDF and BM25")))同样认为（参见 <<tf,词频>> ）文档里的某个词出现次数越频繁，文档与这个词就越相关。
 
-不幸的是，普通词随处可见，((("BM25", "term frequency saturation")))实际上一个普通词在文档里大量出现会抵消该词在 _所有_ 文档中大量出现的作用。
+不幸的是，普通词随处可见，((("BM25", "term frequency saturation")))实际上一个普通词在同一个文档中大量出现的作用会由于该词在 _所有_ 文档中的大量出现而被抵消掉。
 
 曾经有个时期，将 _最_ 普通的词（或 _停用词_ ，参见 <<stopwords,停用词>>）从索引中移除被认为是一种标准实践，((("stopwords", "removal from index")))TF/IDF 正是在这种背景下诞生的。TF/IDF 没有考虑词频上限的问题，因为高频停用词已经被移除了。
 
@@ -31,7 +31,7 @@ Elasticsearch 的 `standard` 标准分析器（ `string` 字段默认使用）�
 image::images/elas_1706.png[TF/IDF 与 BM25 的词频饱和度]
 
 [[bm25-normalization]]
-===== 字段长度规范化（Field-length normalization）
+===== 字段长度归一化（Field-length normalization）
 
 在 <<field-norm,字段长规范化>> 中，我们提到过 Lucene 会认为较短字段比较长字段更重要：字段某个词的频度所带来的重要性会被这个字段长度抵消，但是实际的评分函数会将所有字段以同等方式对待。它认为所有较短的 `title` 字段比所有较长的 `body` 字段更重要。
 
