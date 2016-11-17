@@ -2,7 +2,7 @@
 [[relevance-conclusion]]
 === 调试相关度是最后 10% 要做的事情
 
-本章介绍了 Lucene 是如何基于 TF/IDF 生成评分的。理解评分过程是非常重要的，((("relevance", "controlling", "tuning relevance")))它能针对具体商业领域调试、调节、减弱和操纵评分的结果。
+本章介绍了 Lucene 是如何基于 TF/IDF 生成评分的。理解评分过程是非常重要的，((("relevance", "controlling", "tuning relevance")))这样就可以根据具体的业务对评分结果进行调试、调节、减弱和定制。
 
 实践中，简单的查询组合就能提供很好的搜索结果，但是为了获得 _具有成效_ 的搜索结果，就必须反复推敲修改前面介绍的这些调试方法。
 
