@@ -1,5 +1,5 @@
 [[not-quite-not]]
-=== 不完全不
+=== Not Quite Not
 
 在互联网上搜索 “Apple”，返回的结果很可能是一个公司、水果和各种食谱。((("relevance", "controlling", "must_not clause in bool query")))((("bool query", "must_not clause")))我们可以在 `bool` 查询中用 `must_not` 语句来排除像 `pie` 、 `tart` 、 `crumble` 和 `tree` 这样的词，从而将查询结果的范围缩小至只返回与 “Apple” （苹果）公司相关的结果：
 
