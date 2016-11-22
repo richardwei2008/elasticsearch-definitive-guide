@@ -3,7 +3,7 @@
 
 当然 `bool` 查询不仅限于组合简单的单个词 `match` 查询，((("full text search", "boosting query clauses")))它可以组合任意其他的查询，以及其他 `bool` 查询。((("relevance scores", "controlling weight of query clauses")))普遍的用法是通过汇总多个独立查询的分数，从而达到为每个文档微调其相关度评分 `_score` 的目的。
 
-假设想要查询关于 “full-text search（全文搜索）” 的文档，((("bool query", "boosting weight of query clauses")))((("weight", "controlling for query clauses")))但我们希望为提及 “ElasticSearch” 或 “Lucene” 的文档给予更高的 _权重_ ，这里 _更高权重_ 是指如果文档中出现 “ElasticSearch” 或 “Lucene” ，它们会比没有的出现这些词的文档获得更高的相关度评分 `_score` ，也就是说，它们会出现在结果集的更上面。
+假设想要查询关于 “full-text search（全文搜索）” 的文档，((("bool query", "boosting weight of query clauses")))((("weight", "controlling for query clauses")))但我们希望为提及 “Elasticsearch” 或 “Lucene” 的文档给予更高的 _权重_ ，这里 _更高权重_ 是指如果文档中出现 “Elasticsearch” 或 “Lucene” ，它们会比没有的出现这些词的文档获得更高的相关度评分 `_score` ，也就是说，它们会出现在结果集的更上面。
 
 一个简单的 `bool` _查询_ 允许我们写出如下这种非常复杂的逻辑：
 
