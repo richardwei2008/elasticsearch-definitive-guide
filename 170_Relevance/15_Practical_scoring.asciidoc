@@ -1,5 +1,5 @@
 [[practical-scoring-function]]
-=== Lucene 的使用评分函数
+=== Lucene 的实用评分函数
 
 对于多词查询，((("relevance", "controlling", "Lucene&#x27;s practical scoring function", id="ix_relcontPCF", range="startofrange")))((("Boolean Model"))) Lucene 使用 <<boolean-model,布尔模型（Boolean model）>> 、 <<tfidf,TF/IDF>> 以及 <<vector-space-model,向量空间模型（vector space model）>> ，然后将它们组合到单个高效的包里以收集匹配文档并进行评分计算。
 
