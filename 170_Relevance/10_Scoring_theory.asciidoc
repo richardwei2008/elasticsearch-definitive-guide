@@ -166,8 +166,8 @@ _向量空间模型（vector space model）_ 提供一种比较多词查询的�
 设想如果查询 “happy hippopotamus” ，常见词 `happy` 的权重较低，不常见词 `hippopotamus` 权重较高，假设 `happy` 的权重是 2 ， `hippopotamus` 的权重是 5 ，可以将这个二维向量—— `[2,5]` ——在坐标系下作条直线，线的起点是 (0,0) 终点是 (2,5) ，如图 <<img-vector-query>> 。
 
 [[img-vector-query]]
-。表示 “happy hippopotamus” 的二维查询向量
-image::images/elas_17in01.png["The query vector plotted on a graph"]
+.表示 “happy hippopotamus” 的二维查询向量
+image::images/elas_17in01.png["查询向量绘点图"]
 
 现在，设想我们有三个文档：
 
@@ -182,8 +182,8 @@ image::images/elas_17in01.png["The query vector plotted on a graph"]
 * 文档 3： `(happy,hippopotamus)` —— `[2,5]`
 
 [[img-vector-docs]]
-。“happy hippopotamus” 查询及文档向量
-image::images/elas_17in02.png["The query and document vectors plotted on a graph"]
+.“happy hippopotamus” 查询及文档向量
+image::images/elas_17in02.png["查询及文档向量绘点图"]
 
 向量之间是可以比较的，只要测量查询向量和文档向量之间的角度就可以得到每个文档的相关度，文档 1 与查询之间的角度最大，所以相关度低；文档 2 与查询间的角度较小，所以更相关；文档 3 与查询的角度正好吻合，完全匹配。
 
