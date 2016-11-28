@@ -1,7 +1,7 @@
 [[_finding_exact_values]]
 === 精确值查找
 
-当进行精确值查找时，((("structured search", "finding exact values")))((("exact values", "finding"))) 我们会使用过滤器（filters）。过滤器很重要，因为它们执行速度非常快，不会计算相关度（直接跳过了整个评分阶段）而且很容易被缓存。我们会在本章后面的 <<filter-caching, 过滤器缓存>> 中讨论过滤器的性能优势，不过现在只要记住：请尽可能多的使用过滤器查询。
+当进行精确值查找时，((("structured search", "finding exact values")))((("exact values", "finding"))) 我们会使用过滤器（filters）。过滤器很重要，因为它们执行速度非常快，不会计算相关度（直接跳过了整个评分阶段）而且很容易被缓存。我们会在本章后面的 <<filter-caching, 过滤器缓存>> 中讨论过滤器的性能优势，不过现在只要记住：请尽可能多的使用过滤式查询。
 
 ==== term 查询数字
 
