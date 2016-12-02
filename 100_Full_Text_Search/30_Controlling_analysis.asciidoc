@@ -111,11 +111,11 @@ GET /my_index/my_type/_validate/query?explain
 
 通常，多数字符串字段都是 `not_analyzed` 精确值字段，比如标签（tag）或枚举（enum），而且更多的全文字段会使用默认的 `standard` 分析器或 `english` 或其他某种语言的分析器。这样只需要为少数一两个字段指定自定义分析：或许标题 `title` 字段需要以支持 _输入即查找（find-as-you-type）_ 的方式进行索引。
 
-可以为几乎所有的全文字段指定 `default` 默认分析器，只对少数一两个字段配置特殊的分析器。
+可以在索引级别设置中，为绝大部分的字段设置你想指定的 `default` 默认分析器。然后在字段级别设置中，对某一两个字段配置需要指定的分析器。
 
 [NOTE]
 ====
 对于和时间相关的日志数据，通常的做法是每天自行创建索引，由于这种方式不是从头创建的索引，仍然可以用
-{ref}/indices-templates.html[index templates]
+{ref}/indices-templates.html[索引模板（Index Template）]
 为新建的索引指定配置和映射。
 ====
