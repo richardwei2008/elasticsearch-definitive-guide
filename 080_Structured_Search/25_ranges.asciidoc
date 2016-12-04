@@ -1,7 +1,7 @@
 [[_ranges]]
 === 范围
 
-本章到目前为止，只介绍如何处理精确值查询。((("structured search", "ranges")))实际上，对范围进行过滤有时会更有用。例如，我们可能想要查找所有价格大于 $20 且小于 $40 美元的产品。
+本章到目前为止，对于数字，只介绍如何处理精确值查询。((("structured search", "ranges")))实际上，对数字范围进行过滤有时会更有用。例如，我们可能想要查找所有价格大于 $20 且小于 $40 美元的产品。
 
 在 SQL 中，范围查询可以表示为：
 
@@ -12,7 +12,7 @@ FROM   products
 WHERE  price BETWEEN 20 AND 40
 --------------------------------------------------
 
-Elasticsearch 有 `range` 查询，((("range query", "using on numbers")))不出所料地，可以用它来查找处于范围内的文档：
+Elasticsearch 有 `range` 查询，((("range query", "using on numbers")))不出所料地，可以用它来查找处于某个范围内的文档：
 
 
 [source,js]
@@ -33,7 +33,7 @@ Elasticsearch 有 `range` 查询，((("range query", "using on numbers")))不出
 * `lte`: `<=` 小于或等于（less than or equal to）
 
 
-下面是一个范围查询的例子：
+.下面是一个范围查询的例子：
 [source,js]
 --------------------------------------------------
 GET /my_store/products/_search
@@ -93,7 +93,7 @@ GET /my_store/products/_search
 
 这个过滤器会一直查找时间戳在过去一个小时内的所有文档，让过滤器作为一个时间  _滑动窗口（sliding window）_ 来过滤文档。
 
-日期计算还可以被应用到某个具体的时间，而并非只是一个当前时间的占位符。只要在某个日期后加上一个双管符号 (`||`) 并紧跟一个日期数学表达式就能做到：
+日期计算还可以被应用到某个具体的时间，并非只能是一个像 now 这样的占位符。只要在某个日期后加上一个双管符号 (`||`) 并紧跟一个日期数学表达式就能做到：
 
 [source,js]
 --------------------------------------------------
@@ -111,7 +111,7 @@ GET /my_store/products/_search
 
 ==== 字符串范围
 
-`range` 查询同样可以处理字符串字段，((("range query", "using on strings")))((("strings", "using range query on")))((("lexicographical order, string ranges")))字符串范围可采用 _字典顺序（lexicographically）_ 或字母顺序（alphabetically）。例如，下面这些字符串是采用字典序（lexicographically）：
+`range` 查询同样可以处理字符串字段，((("range query", "using on strings")))((("strings", "using range query on")))((("lexicographical order, string ranges")))字符串范围可采用 _字典顺序（lexicographically）_ 或字母顺序（alphabetically）。例如，下面这些字符串是采用字典序（lexicographically）排序的：
 
 
 * 5, 50, 6, B, C, a, ab, abb, abc, b
@@ -135,7 +135,7 @@ GET /my_store/products/_search
 
 .注意基数
 ****
-数字和日期字段的索引方式可以高效计算范围。((("cardinality", "string ranges and")))但字符串却并非如此，要想对其使用范围过滤，Elasticsearch 实际上是在为范围内的每个词项都执行 `term` 过滤器，这会比日期或数字的范围过滤慢许多。
+数字和日期字段的索引方式使高效地范围计算成为可能。((("cardinality", "string ranges and")))但字符串却并非如此，要想对其使用范围过滤，Elasticsearch 实际上是在为范围内的每个词项都执行 `term` 过滤器，这会比日期或数字的范围过滤慢许多。
 
 
 字符串范围在过滤 _低基数（low cardinality）_ 字段（即只有少量唯一词项）时可以正常工作，但是唯一词项越多，字符串范围的计算会越慢。
