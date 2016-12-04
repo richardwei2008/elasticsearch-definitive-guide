@@ -69,7 +69,7 @@ GET /my_index/my_type/_validate/query?explain
 
     (title:foxes english_title:fox)
 
-`match` 查询为每个字段使用合适的分析器，以保证它在查看每个项时都为该字段使用正确的格式。
+`match` 查询为每个字段使用合适的分析器，以保证它在寻找每个项时都为该字段使用正确的格式。
 
 ==== 默认分析器
 
@@ -88,11 +88,11 @@ GET /my_index/my_type/_validate/query?explain
 * 索引设置中名为 `default` 的分析器，默认为
 * `standard` 标准分析器
 
-有时，在索引时和搜索时使用不同的分析器是合理的。((("analyzers", "using different analyzers at index and search time")))我们可能要想为同义词建索引（例如，所有 `quick` 出现的地方，同时也为 `fast` 、 `rapid` 和 `speedy` 创建索引）。但在搜索时，我们不需要搜索所有的同义词，取而代之的是无论 `quick` 、 `fast` 、 `rapid` 或 `speedy` 都只需关注用户输入的单词。
+有时，在索引时和搜索时使用不同的分析器是合理的。((("analyzers", "using different analyzers at index and search time")))我们可能要想为同义词建索引（例如，所有 `quick` 出现的地方，同时也为 `fast` 、 `rapid` 和 `speedy` 创建索引）。但在搜索时，我们不需要搜索所有的同义词，取而代之的是寻找用户输入的单词是否是 `quick` 、 `fast` 、 `rapid` 或 `speedy` 。
 
-为了区分，Elasticsearch 也支持((("search_analyzer parameter")))一个可选的 `search_analyzer` 映射，它仅会应用于搜索时（ `analyzer` 仍然用于索引时）。还有一个等价的 `default_search` 映射，用以指定索引层的默认配置。
+为了区分，Elasticsearch 也支持((("search_analyzer parameter")))一个可选的 `search_analyzer` 映射，它仅会应用于搜索时（ `analyzer` 还用于索引时）。还有一个等价的 `default_search` 映射，用以指定索引层的默认配置。
 
-如果考虑到这些额外参数，一个索引时的 _完整_ 顺序会是下面这样：
+如果考虑到这些额外参数，一个搜索时的 _完整_ 顺序会是下面这样：
 
 * 查询自己定义的  `analyzer` ，否则
 * 字段映射里定义的 `search_analyzer` ，否则
