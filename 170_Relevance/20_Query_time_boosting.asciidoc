@@ -59,7 +59,7 @@ GET /docs_2014_*/_search <1>
 
 ==== t.getBoost()
 
-这些提升值在 Lucene 的 <<practical-scoring-function,实用评分函数>> 中可以通过 `t.getBoost()` 获得。((("practical scoring function", "t.getBoost() method")))((("boosting", "query-time", "t.getBoost()")))((("t.getBoost() method")))权重提升不会被应用于它在查询表达式中出现的层，而是会被合并下转至每个词中。 `t.getBoost()` 始终返回当前词的权重或当前分析链上当前查询的权重。
+这些提升值在 Lucene 的 <<practical-scoring-function,实用评分函数>> 中可以通过 `t.getBoost()` 获得。((("practical scoring function", "t.getBoost() method")))((("boosting", "query-time", "t.getBoost()")))((("t.getBoost() method")))权重提升不会被应用于它在查询表达式中出现的层，而是会被合并下转至每个词中。 `t.getBoost()` 始终返回当前词的权重或当前分析链上查询的权重。
 
 [TIP]
 ==================================================
