@@ -34,7 +34,7 @@ PUT /my_index
 
 有了这个映射，我们可以用 `first_name` 来查询名，用 `last_name` 来查询姓，或者直接使用 `full_name` 查询整个姓名。
 
-映射中 `first_name` 和 `last_name` 并不知道 `full_name` 是如何索引的， `full_name` 将两个字段的内容复制到本地，然后根据 `full_name` 的映射自行索引。
+`first_name` 和 `last_name` 的映射并不影响 `full_name` 如何被索引， `full_name` 将两个字段的内容复制到本地，然后根据 `full_name` 的映射自行索引。
 
 [WARNING]
 ====
